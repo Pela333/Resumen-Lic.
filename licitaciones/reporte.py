@@ -213,12 +213,14 @@ def generar_pdf(lics: list[Licitacion], estados: list[EstadoFuente], fecha: str,
         pdf.write(5.5, pdf.t(lic.link), link=lic.link)
         pdf.ln(10)
 
-    if pdf.get_y() > pdf.h - 50:
+    if pdf.get_y() > pdf.h - 70:
         pdf.add_page()
     pdf.set_text_color(29, 36, 51)
     pdf.set_font(pdf.familia, "B", 11)
     pdf.cell(0, 7, pdf.t("Estado de las fuentes"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     for s in estados:
+        if pdf.get_y() > pdf.h - 25:
+            pdf.add_page()
         problema = s.estado == "error" or s.alerta
         pdf.set_font(pdf.familia, "B", 9)
         pdf.set_text_color(29, 36, 51)

@@ -9,7 +9,7 @@
 
 | Total Fuentes | Activas (Producción) | En Análisis / Desarrollo | Pendientes |
 | :---: | :---: | :---: | :---: |
-| **36+** | **4** (AUBASA, Vialidad PBA, AUSA, AUSOL) | **1** (Corredores Viales) | **31** |
+| **36+** | **9** (AUBASA, Vialidad PBA, AUSA, AUSOL, CONTRAT.AR, BA Obras, PBAC, COMPR.AR, BAC) | **1** (Corredores Viales) | **26** |
 
 ---
 
@@ -26,15 +26,16 @@
 ---
 
 ## 2. Familia: Plataforma de Compras Electrónicas (ASP.NET)
-*Comparten la misma arquitectura base (software de contrataciones públicas con formularios `.aspx`). Resolver una facilita las demás.*
+*Comparten la misma arquitectura base (software de contrataciones públicas con formularios `.aspx`). Todas activas.*
 
 | Organismo / Portal | URL Oficial | Estado | Notas Técnicas |
 | :--- | :--- | :---: | :--- |
-| **PBAC** (PBA Compras) | `https://pbac.cgp.gba.gov.ar/ListarAperturaProxima.aspx` | ⏳ Pendiente | Próximas aperturas provincia. |
-| **BA Obras** (CABA) | `https://buenosairesobras.dguiaf-gcba.gov.ar/ListarAperturaProxima.aspx` | ⏳ Pendiente | Portal exclusivo de obra pública CABA. |
-| **BAC** (Buenos Aires Compras) | `https://www.buenosairescompras.gob.ar/Default.aspx` | ⏳ Pendiente | Portal general CABA. |
-| **CONTRAT.AR** (Nación Obra) | `https://contratar.gob.ar/Default.aspx` | ⏳ Pendiente | Portal exclusivo de obra pública nacional. |
-| **COMPR.AR** (Nación Bienes) | `https://comprar.gob.ar/Compras.aspx?qs=W1HXHGHtH10=` | ⏳ Pendiente | Portal general nacional. |
+| **CONTRAT.AR** (Nación Obra) | `https://contratar.gob.ar/ListarAperturaProxima.aspx` | ✅ **Activo** | Obra pública nacional (`licitaciones/fuentes/contratar.py`). Resuelve enlaces pliego ciudadano directo. |
+| **BA Obras** (CABA) | `https://buenosairesobras.dguiaf-gcba.gov.ar/ListarAperturaProxima.aspx` | ✅ **Activo** | Obra pública CABA (`licitaciones/fuentes/ba_obras.py`). Sesión BIG-IP ASP.NET gestionada. |
+| **PBAC** (PBA Compras) | `https://pbac.cgp.gba.gov.ar/ListarAperturaProxima.aspx` | ✅ **Activo** | Compras PBA (`licitaciones/fuentes/pbac.py`). Filtro de obras y pliego ciudadano directo. |
+| **COMPR.AR** (Nación) | `https://comprar.gob.ar/Compras.aspx?qs=W1HXHGHtH10=` | ✅ **Activo** | Contrataciones Nación (`licitaciones/fuentes/comprar.py`). Filtro de infraestructura/obras. |
+| **BAC** (Buenos Aires Compras) | `https://www.buenosairescompras.gob.ar/ListarAperturaProxima.aspx` | ✅ **Activo** | Compras CABA (`licitaciones/fuentes/bac.py`). Filtro de mantenimiento edilicio/obras. |
+
 
 ---
 

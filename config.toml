@@ -10,7 +10,18 @@ base_de_datos = "datos/licitaciones.db"
 
 [fuentes]
 # Fuentes que se consultan en cada corrida. Se irán sumando a medida que se programen.
-activas = ["aubasa", "vialidad_pba", "ausa", "ausol"]
+activas = [
+    "aubasa",
+    "vialidad_pba",
+    "ausa",
+    "ausol",
+    "contratar",
+    "ba_obras",
+    "pbac",
+    "comprar",
+    "bac",
+]
+
 
 [alertas]
 # Si una fuente muestra 0 licitaciones en esta cantidad de corridas seguidas,
