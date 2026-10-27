@@ -9,7 +9,7 @@
 
 | Total Fuentes | Activas (Producción) | En Análisis / Desarrollo | Pendientes |
 | :---: | :---: | :---: | :---: |
-| **36+** | **9** (AUBASA, Vialidad PBA, AUSA, AUSOL, CONTRAT.AR, BA Obras, PBAC, COMPR.AR, BAC) | **1** (Corredores Viales) | **26** |
+| **36+** | **13** (AUBASA, Vialidad PBA, AUSA, AUSOL, CONTRAT.AR, BA Obras, PBAC, COMPR.AR, BAC, Minfra PBA, OPISU, Hábitat, COMIREC) | **1** (Corredores Viales) | **22** |
 
 ---
 
@@ -40,19 +40,19 @@
 ---
 
 ## 3. Familia: Portales GBA (Gobierno de la Provincia de Buenos Aires)
-*Sitios institucionales que comparten el CMS institucional (Drupal) de la provincia.*
+*Sitios institucionales provinciales (Drupal CMS / iframes de infraestructura).*
 
 | Organismo | URL Oficial | Estado | Notas Técnicas |
 | :--- | :--- | :---: | :--- |
-| **OPISU - Obras** | `https://www.gba.gob.ar/opisu/licitaciones_en_curso_de_obras` | ⏳ Pendiente | Organismo de Integración Social y Urbana. |
-| **OPISU - Bienes y Serv.** | `https://www.gba.gob.ar/opisu/licitaciones_en_curso_de_bienes_y_servicios` | ⏳ Pendiente | Compras y servicios OPISU. |
-| **Infraestructura PBA** | `https://www.gba.gob.ar/infraestructura/licitaciones` | ⏳ Pendiente | Min. de Infraestructura y Servicios Públicos. |
-| **COMIREC** | `https://www.gba.gob.ar/comirec/contrataciones_comirec` | ⏳ Pendiente | Cuenca del Río Reconquista. |
-| **Hábitat PBA** | `https://www.gba.gob.ar/habitat/licitaciones` | ⏳ Pendiente | Ministerio de Hábitat y Desarrollo Urbano. |
-| **Justicia y DDHH PBA** | `https://www.gba.gob.ar/justicia_y_ddhh/licitaciones` | ⏳ Pendiente | Obras penitenciarias e infraestructura judicial. |
-| **Ambiente PBA (PNUD)** | `https://www.ambiente.gba.gob.ar/contenido/licitaciones_proyecto_pnud_arg22008_0` | ⏳ Pendiente | Proyectos ambientales con financiamiento PNUD. |
-| **DGCyE (Escuelas / ABC)**| `https://abc2.abc.gob.ar/area_administrativa` | ⏳ Pendiente | Infraestructura escolar PBA. |
-| **Sistemas GBA** | `https://sistemas.gba.gob.ar/consulta/contrataciones/` | ⏳ Pendiente | Consulta consolidada provincial. |
+| **Min. Infraestructura PBA** | `https://www.minfra.gba.gob.ar/licitacionesV2/obras` | ✅ **Activo** | Obra pública provincial mayor (`licitaciones/fuentes/minfra.py`). Extrae presupuesto oficial y lugar de apertura. |
+| **OPISU - Obras y Bienes** | `https://adquisiciones.opisu.gba.gob.ar/obras` | ✅ **Activo** | Integración Social y Urbana (`licitaciones/fuentes/opisu.py`). Monitorea ambas tablas. |
+| **Hábitat PBA** | `https://www.gba.gob.ar/habitat/licitaciones` | ✅ **Activo** | Min. de Hábitat y Desarrollo Urbano (`licitaciones/fuentes/habitat.py`). Detalle de obras y fechas. |
+| **COMIREC** | `https://www.gba.gob.ar/comirec/contrataciones_comirec` | ✅ **Activo** | Cuenca del Río Reconquista (`licitaciones/fuentes/comirec.py`). Licitaciones hidráulicas y saneamiento. |
+| **Justicia y DDHH PBA** | `https://www.gba.gob.ar/justicia_y_ddhh/licitaciones` | ⏳ Pendiente | Sin llamados activos en la web. |
+| **Ambiente PBA (PNUD)** | `https://www.ambiente.gba.gob.ar/contenido/licitaciones_proyecto_pnud_arg22008_0` | ⏳ Pendiente | Sin llamados activos (últimos de 2025). |
+| **DGCyE (Escuelas / ABC)**| `https://abc2.abc.gob.ar/area_administrativa` | ⏳ Pendiente | Cifrado legado DH. |
+| **Sistemas GBA** | `https://sistemas.gba.gob.ar/consulta/contrataciones/` | ⏳ Pendiente | Redirige a consulta provincial. |
+
 
 ---
 

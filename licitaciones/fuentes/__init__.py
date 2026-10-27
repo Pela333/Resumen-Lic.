@@ -1,7 +1,22 @@
 """Carga todas las fuentes disponibles para que queden registradas."""
 
-from . import aubasa, ausa, ausol, ba_obras, bac, comprar, contratar, pbac, vialidad  # noqa: F401
+from . import (  # noqa: F401
+    aubasa,
+    ausa,
+    ausol,
+    ba_obras,
+    bac,
+    comirec,
+    comprar,
+    contratar,
+    habitat,
+    minfra,
+    opisu,
+    pbac,
+    vialidad,
+)
 from .base import REGISTRO, EstructuraCambiada, Fuente
 
 __all__ = ["REGISTRO", "EstructuraCambiada", "Fuente"]
+
 

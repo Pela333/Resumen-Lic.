@@ -20,7 +20,12 @@ activas = [
     "pbac",
     "comprar",
     "bac",
+    "minfra_pba",
+    "opisu",
+    "habitat_pba",
+    "comirec",
 ]
+
 
 
 [alertas]
