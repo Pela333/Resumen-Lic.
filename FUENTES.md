@@ -9,7 +9,7 @@
 
 | Total Fuentes | Activas (Producción) | En Análisis / Desarrollo | Pendientes |
 | :---: | :---: | :---: | :---: |
-| **36+** | **2** (AUBASA, Vialidad PBA) | **1** (AUSOL) | **33** |
+| **36+** | **4** (AUBASA, Vialidad PBA, AUSA, AUSOL) | **1** (Corredores Viales) | **31** |
 
 ---
 
@@ -19,8 +19,8 @@
 | Organismo | URL Oficial | Estado | Notas Técnicas |
 | :--- | :--- | :---: | :--- |
 | **AUBASA** | `https://compras.aubasa.com.ar/` | ✅ **Activo** | HTML directo (`licitaciones/fuentes/aubasa.py`). |
-| **AUSOL** (Autopistas del Sol) | `https://www.ausol.com.ar/Licitaciones` | ⏳ Pendiente | Listado corporativo. |
-| **AUSA** (Autopistas Urbanas CABA) | `https://www.ausa.com.ar/proveedores/licitaciones` | ⏳ Pendiente | Sección proveedores. |
+| **AUSOL** (Autopistas del Sol) | `https://www.ausol.com.ar/licitaciones` | ✅ **Activo** | Next.js JSON en HTML (`licitaciones/fuentes/ausol.py`). |
+| **AUSA** (Autopistas Urbanas CABA) | `https://www.ausa.com.ar/proveedores/licitaciones` | ✅ **Activo** | API REST interna (`licitaciones/fuentes/ausa.py`). |
 | **Corredores Viales S.A.** | `https://corredoresvialessa.com.ar/licitaciones/bienes/publicas` | ⏳ Pendiente | Empresa estatal nacional vial. |
 
 ---

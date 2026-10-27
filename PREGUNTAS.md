@@ -79,7 +79,7 @@ Para cada licitación detectada, el sistema intentará recopilar los siguientes 
    * **Criterio general:** Solo se incluyen **obras** (arquitectura, viales, hidráulicas, etc.).
    * **Excepción para prueba piloto:** Para este primer test se incluye la licitación actual de AUBASA (servicio de monitoreo) para validar la recepción del mail y el diseño del PDF.
 2. **Cuenta de envío:**
-   * Configurada cuenta Gmail dedicada: `ignaciobordoli44@gmail.com` con contraseña de aplicación de 16 caracteres. Destinatario actual: `ignaciobordoli44@gmail.com`.
+   * Configurada cuenta Gmail dedicada: `ignaciobordoli44@gmail.com` con contraseña de aplicación de 16 caracteres. Destinatario exclusivo actual: `ignaciobordoli44@gmail.com`.
 3. **Entorno de ejecución programada:**
    * **GitHub Actions** (programado para lunes, miércoles y viernes a las 8:00 AM hora argentina / 11:00 UTC).
    * Persistencia de base de datos (`licitaciones.db`) mediante guardado automático en el repositorio para no repetir envíos entre ejecuciones en la nube.
