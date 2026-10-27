@@ -1,0 +1,23 @@
+# Configuración técnica del sistema.
+# Las preferencias de negocio (qué se busca, para quién, cuándo) están en PREGUNTAS.md.
+# Este archivo traduce esas preferencias a valores que el programa lee.
+# Las claves y contraseñas NO van acá: van en el archivo .env (ver .env.example).
+
+[general]
+zona_horaria = "America/Argentina/Buenos_Aires"
+carpeta_salida = "salida"          # donde se guardan los PDF y HTML generados
+base_de_datos = "datos/licitaciones.db"
+
+[fuentes]
+# Fuentes que se consultan en cada corrida. Se irán sumando a medida que se programen.
+activas = ["aubasa"]
+
+[alertas]
+# Si una fuente muestra 0 licitaciones en esta cantidad de corridas seguidas,
+# el mail lo avisa (puede estar caída o haber cambiado su diseño).
+corridas_sin_resultados_para_avisar = 3
+
+[mail]
+asunto = "Resumen de licitaciones - {fecha}"
+# Si no hay licitaciones nuevas, igual se envía el mail con el estado de las fuentes.
+enviar_si_no_hay_novedades = true
