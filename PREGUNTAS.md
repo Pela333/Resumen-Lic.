@@ -11,8 +11,9 @@
 * **Especialidad principal:** Obras viales y obras de arquitectura.
 * **Criterio de filtrado:**
   * **NO** utilizar filtros de palabras clave rígidas (evitar descartar licitaciones por diferencias léxicas, ej.: "pavimento" vs "carpeta asfáltica" vs "hormigonado").
-  * En portales específicos de obra (Vialidad, Infraestructura, AUBASA, OPISU), se recolecta **todo** lo publicado, ya que por definición pertenece al rubro.
-  * En portales generalistas (Boletín Oficial), se implementará una clasificación contextual (mediante IA o exclusión de rubros no constructivos como insumos médicos, limpieza, librería) para no perder oportunidades.
+  * En portales específicos de obra (Vialidad, Infraestructura, AUBASA, OPISU, etc.), se recolecta **todo** lo publicado, ya que por definición pertenece al rubro.
+  * En portales generalistas y boletines (Boletín Oficial PBA, Boletín Oficial Nación), se capturan también llamados a licitación pública de municipios (La Plata, Vicente López, Saladillo, Quilmes, Roque Pérez, Avellaneda, Lanús, Morón, etc.).
+  * Catálogo completo de enlaces y estado de desarrollo: ver archivo [FUENTES.md](FUENTES.md).
 
 ---
 
