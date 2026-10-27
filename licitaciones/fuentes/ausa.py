@@ -49,18 +49,26 @@ class Ausa(Fuente):
                 continue
 
             for d in items:
-                # Filtrar licitaciones activas:
-                # estado == 1 (abiertas/en llamado) o con fecha de apertura futura/hoy
-                fecha_aper = d.get("fechaApertura") or ""
-                estado_id = d.get("estado")
-                esta_activa = (estado_id == 1) or (fecha_aper and fecha_aper[:10] >= hoy)
-
-                # Si ya fue adjudicada y la fecha de apertura pasó, no se reporta como novedad abierta
-                if d.get("fechaAdjudicacion") and (not fecha_aper or fecha_aper[:10] < hoy):
+                # 1. Descartar si ya fue adjudicada
+                if d.get("fechaAdjudicacion") or d.get("adjudicatario"):
                     continue
 
-                if esta_activa:
-                    resultados.append(self._mapear(d, tipo_nombre))
+                fecha_aper = d.get("fechaApertura") or ""
+
+                # 2. Si tiene fecha de apertura, solo incluir si es hoy o a futuro
+                if fecha_aper:
+                    if fecha_aper[:10] < hoy:
+                        continue
+                else:
+                    # Si no tiene fecha de apertura, descartar expedientes de años anteriores
+                    nombre = str(d.get("nombre") or "").strip()
+                    anio_str = nombre[:4]
+                    if not (anio_str.isdigit() and int(anio_str) >= int(hoy[:4])):
+                        continue
+                    if d.get("estado") != 1:
+                        continue
+
+                resultados.append(self._mapear(d, tipo_nombre))
 
         return resultados
 

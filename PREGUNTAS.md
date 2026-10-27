@@ -9,7 +9,9 @@
 
 * **Tipo de empresa:** Constructora.
 * **Especialidad principal:** Obras viales y obras de arquitectura.
-* **Criterio de filtrado:**
+* **Criterio de vigencia de fechas:**
+  * **Solo licitaciones abiertas / vigentes:** Se descartan automáticamente llamados cuya fecha de apertura ya haya pasado (`fecha_apertura < hoy`) o figuren como adjudicadas/finalizadas, aunque el organismo las siga mostrando en su sitio.
+* **Criterio de filtrado temático:**
   * **NO** utilizar filtros de palabras clave rígidas (evitar descartar licitaciones por diferencias léxicas, ej.: "pavimento" vs "carpeta asfáltica" vs "hormigonado").
   * En portales específicos de obra (Vialidad, Infraestructura, AUBASA, OPISU, etc.), se recolecta **todo** lo publicado, ya que por definición pertenece al rubro.
   * En portales generalistas y boletines (Boletín Oficial PBA, Boletín Oficial Nación), se capturan también llamados a licitación pública de municipios (La Plata, Vicente López, Saladillo, Quilmes, Roque Pérez, Avellaneda, Lanús, Morón, etc.).
