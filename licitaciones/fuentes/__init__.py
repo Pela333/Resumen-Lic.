@@ -3,6 +3,7 @@
 from . import (  # noqa: F401
     acumar,
     agp,
+    ambiente_nacion,
     aubasa,
     ausa,
     ausol,
@@ -17,7 +18,9 @@ from . import (  # noqa: F401
     minfra,
     opisu,
     pbac,
+    proinged,
     puerto_la_plata,
+    senado,
     vialidad,
 )
 from .base import REGISTRO, EstructuraCambiada, Fuente

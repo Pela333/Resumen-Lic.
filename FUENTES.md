@@ -9,7 +9,7 @@
 
 | Total Fuentes | Activas (Producción) | En Análisis / Desarrollo | Pendientes |
 | :---: | :---: | :---: | :---: |
-| **36+** | **16** (AUBASA, Vialidad PBA, AUSA, AUSOL, CONTRAT.AR, BA Obras, PBAC, COMPR.AR, BAC, Minfra PBA, OPISU, Hábitat, COMIREC, Corredores Viales, ACUMAR, AGP) | **2** (AySA, Puerto La Plata) | **18** |
+| **36+** | **21** (AUBASA, Vialidad PBA, AUSA, AUSOL, CONTRAT.AR, BA Obras, PBAC, COMPR.AR, BAC, Minfra PBA, OPISU, Hábitat, COMIREC, Corredores Viales, ACUMAR, AGP, AySA, Puerto La Plata, Senado, PROINGED, Ambiente Nación) | **1** (Aeropuertos Argentina) | **14** |
 
 ---
 
@@ -71,9 +71,9 @@
 
 | Organismo | URL Oficial | Estado | Notas Técnicas |
 | :--- | :--- | :---: | :--- |
-| **AySA** | `https://www.aysa.com.ar/proveedores/licitaciones` | ⏳ Pendiente | Agua y Saneamientos Argentinos S.A. |
+| **AySA** | `https://www.aysa.com.ar/proveedores/licitaciones` | ✅ **Activo** | Agua y Saneamientos Argentinos (`licitaciones/fuentes/aysa.py`). API JSON de obras. |
 | **ACUMAR** | `https://www.acumar.gob.ar/transparencia/compras-y-contrataciones/` | ✅ **Activo** | Cuenca Matanza Riachuelo (`licitaciones/fuentes/acumar.py`). Obras de saneamiento e infraestructura. |
-| **Puerto La Plata** | `https://puertolaplata.com/servicios-y-negocios/licitaciones-publicadas` | ⏳ Pendiente | Consorcio de Gestión del Puerto. |
+| **Puerto La Plata** | `https://puertolaplata.com/servicios-y-negocios/licitaciones-publicadas` | ✅ **Activo** | Consorcio de Gestión del Puerto (`licitaciones/fuentes/puerto_la_plata.py`). Obras portuarias. |
 | **AGP** (Puertos) | `https://www.agpsau.gob.ar/llamados/82` | ✅ **Activo** | Administración General de Puertos (`licitaciones/fuentes/agp.py`). Obras y mantenimiento portuario. |
 | **Aeropuertos Argentina** | `https://www.aeropuertosargentina.com/es/sobre-nosotros/licitaciones` | ⏳ Pendiente | Concesionaria aeroportuaria (AA2000). |
 | **EANA** | `https://www.eana.com.ar/licitaciones` | ⏳ Pendiente | Empresa Argentina de Navegación Aérea. |
@@ -85,10 +85,10 @@
 | Organismo | URL Oficial | Estado | Notas Técnicas |
 | :--- | :--- | :---: | :--- |
 | **FOCEM (Mercosur)** | `https://focem.mercosur.int/es/licitaciones/` | ⏳ Pendiente | Fondo de Convergencia Estructural Mercosur. |
-| **PROINGED** | `https://www.proinged.org.ar/licitaciones/` | ⏳ Pendiente | Generación Eléctrica Distribuida. |
+| **PROINGED** | `https://www.proinged.org.ar/licitaciones/` | ✅ **Activo** | Generación Eléctrica Distribuida (`licitaciones/fuentes/proinged.py`). Parques solares y obras eléctricas. |
 | **SEDICI (UNLP)** | `https://sedici.unlp.edu.ar/handle/10915/69217/discover?filtertype=dateIssued&filter_relational_operator=equals&filter=2026` | ⏳ Pendiente | Repositorio DSpace UNLP. |
-| **Senado de la Nación** | `https://www.senado.gob.ar/administrativo/Licitaciones` | ⏳ Pendiente | Contrataciones administrativas legislativas. |
-| **Ambiente Nación** | `https://www.argentina.gob.ar/ambiente/licitaciones-especiales` | ⏳ Pendiente | Licitaciones especiales y con crédito internacional. |
+| **Senado de la Nación** | `https://www.senado.gob.ar/administrativo/Licitaciones` | ✅ **Activo** | Contrataciones y obras edilicias (`licitaciones/fuentes/senado.py`). |
+| **Ambiente Nación** | `https://www.argentina.gob.ar/ambiente/licitaciones-especiales` | ✅ **Activo** | Licitaciones especiales y con crédito internacional (`licitaciones/fuentes/ambiente_nacion.py`). |
 | **GCABA Histórico** | `https://buenosaires.gob.ar/gcaba_historico/licitaciones-en-curso/licitaciones-publicas-2026` | ⏳ Pendiente | Corporación / listado anual. |
 
 ---
