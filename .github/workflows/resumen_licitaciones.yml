@@ -2,9 +2,9 @@ name: Resumen de Licitaciones
 
 on:
   schedule:
-    # Lunes, Miércoles y Viernes a las 07:30 AM Argentina (10:30 AM UTC)
-    # Se programa 30 minutos antes para absorber cualquier demora en la cola de GitHub
-    - cron: '30 10 * * 1,3,5'
+    # Lunes, Miércoles y Viernes a las 07:25 AM Argentina (10:25 AM UTC)
+    # Minuto 25 para evitar la congestión masiva de GitHub Actions en los minutos :00 y :30
+    - cron: '25 10 * * 1,3,5'
   workflow_dispatch: # Permite dispararlo manualmente en cualquier momento desde la web de GitHub
 
 permissions:
