@@ -24,6 +24,9 @@ activas = [
     "opisu",
     "habitat_pba",
     "comirec",
+    "corredores_viales",
+    "acumar",
+    "agp",
 ]
 
 

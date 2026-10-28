@@ -1,6 +1,8 @@
 """Carga todas las fuentes disponibles para que queden registradas."""
 
 from . import (  # noqa: F401
+    acumar,
+    agp,
     aubasa,
     ausa,
     ausol,
@@ -9,6 +11,7 @@ from . import (  # noqa: F401
     comirec,
     comprar,
     contratar,
+    corredores_viales,
     habitat,
     minfra,
     opisu,
