@@ -10,6 +10,7 @@ from . import (  # noqa: F401
     aysa,
     ba_obras,
     bac,
+    boletin_oficial_nacion,
     comirec,
     comprar,
     contratar,

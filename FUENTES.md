@@ -9,7 +9,7 @@
 
 | Total Fuentes | Activas (Producción) | En Análisis / Desarrollo | Pendientes |
 | :---: | :---: | :---: | :---: |
-| **36+** | **21** (AUBASA, Vialidad PBA, AUSA, AUSOL, CONTRAT.AR, BA Obras, PBAC, COMPR.AR, BAC, Minfra PBA, OPISU, Hábitat, COMIREC, Corredores Viales, ACUMAR, AGP, AySA, Puerto La Plata, Senado, PROINGED, Ambiente Nación) | **1** (Aeropuertos Argentina) | **14** |
+| **36+** | **22** (AUBASA, Vialidad PBA, AUSA, AUSOL, CONTRAT.AR, BA Obras, PBAC, COMPR.AR, BAC, Minfra PBA, OPISU, Hábitat, COMIREC, Corredores Viales, ACUMAR, AGP, AySA, Puerto La Plata, Senado, PROINGED, Ambiente Nación, BORA 3ª Sección) | **1** (Boletín PBA) | **13** |
 
 ---
 
@@ -100,4 +100,4 @@
 | :--- | :--- | :--- | :--- |
 | **Boletín Oficial PBA** | `https://boletinoficial.gba.gob.ar/` | 135 Municipios bonaerenses + entes provinciales | Sección Municipal y Oficial. |
 | **Boletín Oficial CABA** | `https://boletinoficial.buenosaires.gob.ar/` | Ciudad Autónoma de Buenos Aires | Separata y contrataciones. |
-| **Boletín Oficial Nación** | `https://www.boletinoficial.gob.ar/` | Nacional y entes federales | 3ª sección (Contrataciones). |
+| **Boletín Oficial Nación** | `https://www.boletinoficial.gob.ar/seccion/tercera` | ✅ **Activo** | BORA 3ª Sección (`licitaciones/fuentes/boletin_oficial_nacion.py`). Publicación diaria legal obligatoria de obras. |
