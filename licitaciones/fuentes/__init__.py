@@ -6,6 +6,7 @@ from . import (  # noqa: F401
     aubasa,
     ausa,
     ausol,
+    aysa,
     ba_obras,
     bac,
     comirec,
@@ -16,6 +17,7 @@ from . import (  # noqa: F401
     minfra,
     opisu,
     pbac,
+    puerto_la_plata,
     vialidad,
 )
 from .base import REGISTRO, EstructuraCambiada, Fuente
