@@ -9,7 +9,7 @@
 
 | Total Fuentes | Activas (Producción) | En Análisis / Desarrollo | Pendientes |
 | :---: | :---: | :---: | :---: |
-| **36+** | **22** (AUBASA, Vialidad PBA, AUSA, AUSOL, CONTRAT.AR, BA Obras, PBAC, COMPR.AR, BAC, Minfra PBA, OPISU, Hábitat, COMIREC, Corredores Viales, ACUMAR, AGP, AySA, Puerto La Plata, Senado, PROINGED, Ambiente Nación, BORA 3ª Sección) | **1** (Boletín PBA) | **13** |
+| **36+** | **25** (AUBASA, Vialidad PBA, AUSA, AUSOL, CONTRAT.AR, BA Obras, PBAC, COMPR.AR, BAC, Minfra PBA, OPISU, Hábitat, COMIREC, Corredores Viales, ACUMAR, AGP, AySA, Puerto La Plata, Senado, PROINGED, Ambiente Nación, BORA 3ª Sección, EANA, Ambiente PBA, Justicia PBA) | **0** | **10** (portales con bloqueo/SSL legado/PDF 70MB) |
 
 ---
 
@@ -48,8 +48,8 @@
 | **OPISU - Obras y Bienes** | `https://adquisiciones.opisu.gba.gob.ar/obras` | ✅ **Activo** | Integración Social y Urbana (`licitaciones/fuentes/opisu.py`). Monitorea ambas tablas. |
 | **Hábitat PBA** | `https://www.gba.gob.ar/habitat/licitaciones` | ✅ **Activo** | Min. de Hábitat y Desarrollo Urbano (`licitaciones/fuentes/habitat.py`). Detalle de obras y fechas. |
 | **COMIREC** | `https://www.gba.gob.ar/comirec/contrataciones_comirec` | ✅ **Activo** | Cuenca del Río Reconquista (`licitaciones/fuentes/comirec.py`). Licitaciones hidráulicas y saneamiento. |
-| **Justicia y DDHH PBA** | `https://www.gba.gob.ar/justicia_y_ddhh/licitaciones` | ⏳ Pendiente | Sin llamados activos en la web. |
-| **Ambiente PBA (PNUD)** | `https://www.ambiente.gba.gob.ar/contenido/licitaciones_proyecto_pnud_arg22008_0` | ⏳ Pendiente | Sin llamados activos (últimos de 2025). |
+| **Justicia y DDHH PBA** | `https://www.gba.gob.ar/justicia_y_ddhh/licitaciones` | ✅ **Activo** | Infraestructura penitenciaria y judicial (`licitaciones/fuentes/justicia_pba.py`). |
+| **Ambiente PBA (PNUD)** | `https://www.ambiente.gba.gob.ar/contenido/licitaciones_proyecto_pnud_arg22008_0` | ✅ **Activo** | Parques ambientales y saneamiento (`licitaciones/fuentes/ambiente_pba.py`). |
 | **DGCyE (Escuelas / ABC)**| `https://abc2.abc.gob.ar/area_administrativa` | ⏳ Pendiente | Cifrado legado DH. |
 | **Sistemas GBA** | `https://sistemas.gba.gob.ar/consulta/contrataciones/` | ⏳ Pendiente | Redirige a consulta provincial. |
 
@@ -76,7 +76,7 @@
 | **Puerto La Plata** | `https://puertolaplata.com/servicios-y-negocios/licitaciones-publicadas` | ✅ **Activo** | Consorcio de Gestión del Puerto (`licitaciones/fuentes/puerto_la_plata.py`). Obras portuarias. |
 | **AGP** (Puertos) | `https://www.agpsau.gob.ar/llamados/82` | ✅ **Activo** | Administración General de Puertos (`licitaciones/fuentes/agp.py`). Obras y mantenimiento portuario. |
 | **Aeropuertos Argentina** | `https://www.aeropuertosargentina.com/es/sobre-nosotros/licitaciones` | ⏳ Pendiente | Concesionaria aeroportuaria (AA2000). |
-| **EANA** | `https://www.eana.com.ar/licitaciones` | ⏳ Pendiente | Empresa Argentina de Navegación Aérea. |
+| **EANA** | `https://www.eana.com.ar/licitaciones` | ✅ **Activo** | Navegación Aérea Argentina (`licitaciones/fuentes/eana.py`). |
 
 ---
 
@@ -89,7 +89,7 @@
 | **SEDICI (UNLP)** | `https://sedici.unlp.edu.ar/handle/10915/69217/discover?filtertype=dateIssued&filter_relational_operator=equals&filter=2026` | ⏳ Pendiente | Repositorio DSpace UNLP. |
 | **Senado de la Nación** | `https://www.senado.gob.ar/administrativo/Licitaciones` | ✅ **Activo** | Contrataciones y obras edilicias (`licitaciones/fuentes/senado.py`). |
 | **Ambiente Nación** | `https://www.argentina.gob.ar/ambiente/licitaciones-especiales` | ✅ **Activo** | Licitaciones especiales y con crédito internacional (`licitaciones/fuentes/ambiente_nacion.py`). |
-| **GCABA Histórico** | `https://buenosaires.gob.ar/gcaba_historico/licitaciones-en-curso/licitaciones-publicas-2026` | ⏳ Pendiente | Corporación / listado anual. |
+| **GCBA - Corporación Sur** | `https://buenosaires.gob.ar/gcaba_historico/licitaciones-en-curso/licitaciones-publicas-2026` | ✅ **Activo** | Corporación Buenos Aires Sur (`licitaciones/fuentes/corporacion_sur.py`). |
 
 ---
 

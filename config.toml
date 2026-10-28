@@ -33,9 +33,10 @@ activas = [
     "proinged",
     "ambiente_nacion",
     "boletin_oficial_nacion",
+    "eana",
+    "ambiente_pba",
+    "justicia_pba",
 ]
-
-
 
 [alertas]
 # Si una fuente muestra 0 licitaciones en esta cantidad de corridas seguidas,

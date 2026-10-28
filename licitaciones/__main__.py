@@ -48,12 +48,24 @@ def main(argv: list[str] | None = None) -> int:
     cfg = tomllib.loads((RAIZ / "config.toml").read_text(encoding="utf-8"))
     load_dotenv(RAIZ / ".env")
 
-    ruta_db = RAIZ / cfg["general"]["base_de_datos"]
-    _configurar_log(ruta_db.parent)
+    ruta_db_real = RAIZ / cfg["general"]["base_de_datos"]
+    _configurar_log(ruta_db_real.parent)
     zona = ZoneInfo(cfg["general"]["zona_horaria"])
     ahora = datetime.now(zona)
     marca = ahora.isoformat(timespec="seconds")
     fecha_legible = ahora.strftime("%d/%m/%Y %H:%M")
+
+    if args.sin_enviar:
+        import shutil
+        salida_tmp = RAIZ / cfg["general"]["carpeta_salida"]
+        salida_tmp.mkdir(parents=True, exist_ok=True)
+        ruta_db = salida_tmp / "test_temp.db"
+        if ruta_db_real.exists():
+            shutil.copy2(ruta_db_real, ruta_db)
+        elif ruta_db.exists():
+            ruta_db.unlink()
+    else:
+        ruta_db = ruta_db_real
 
     db = BaseDatos(ruta_db)
     web = ClienteWeb()
