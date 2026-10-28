@@ -103,3 +103,4 @@ class Acumar(Fuente):
             )
 
         return resultados
+

@@ -9,7 +9,7 @@
 
 | Total Fuentes | Activas (Producción) | En Análisis / Desarrollo | Pendientes |
 | :---: | :---: | :---: | :---: |
-| **36+** | **13** (AUBASA, Vialidad PBA, AUSA, AUSOL, CONTRAT.AR, BA Obras, PBAC, COMPR.AR, BAC, Minfra PBA, OPISU, Hábitat, COMIREC) | **1** (Corredores Viales) | **22** |
+| **36+** | **16** (AUBASA, Vialidad PBA, AUSA, AUSOL, CONTRAT.AR, BA Obras, PBAC, COMPR.AR, BAC, Minfra PBA, OPISU, Hábitat, COMIREC, Corredores Viales, ACUMAR, AGP) | **2** (AySA, Puerto La Plata) | **18** |
 
 ---
 
@@ -21,7 +21,7 @@
 | **AUBASA** | `https://compras.aubasa.com.ar/` | ✅ **Activo** | HTML directo (`licitaciones/fuentes/aubasa.py`). |
 | **AUSOL** (Autopistas del Sol) | `https://www.ausol.com.ar/licitaciones` | ✅ **Activo** | Next.js JSON en HTML (`licitaciones/fuentes/ausol.py`). |
 | **AUSA** (Autopistas Urbanas CABA) | `https://www.ausa.com.ar/proveedores/licitaciones` | ✅ **Activo** | API REST interna (`licitaciones/fuentes/ausa.py`). |
-| **Corredores Viales S.A.** | `https://corredoresvialessa.com.ar/licitaciones/bienes/publicas` | ⏳ Pendiente | Empresa estatal nacional vial. |
+| **Corredores Viales S.A.** | `https://corredoresvialessa.com.ar/licitaciones/bienes/publicas` | ✅ **Activo** | API JSON oficial (`licitaciones/fuentes/corredores_viales.py`). Obras viales y mantenimiento. |
 
 ---
 
@@ -72,9 +72,9 @@
 | Organismo | URL Oficial | Estado | Notas Técnicas |
 | :--- | :--- | :---: | :--- |
 | **AySA** | `https://www.aysa.com.ar/proveedores/licitaciones` | ⏳ Pendiente | Agua y Saneamientos Argentinos S.A. |
-| **ACUMAR** | `https://www.acumar.gob.ar/transparencia/compras-y-contrataciones/` | ⏳ Pendiente | Cuenca Matanza Riachuelo. |
+| **ACUMAR** | `https://www.acumar.gob.ar/transparencia/compras-y-contrataciones/` | ✅ **Activo** | Cuenca Matanza Riachuelo (`licitaciones/fuentes/acumar.py`). Obras de saneamiento e infraestructura. |
 | **Puerto La Plata** | `https://puertolaplata.com/servicios-y-negocios/licitaciones-publicadas` | ⏳ Pendiente | Consorcio de Gestión del Puerto. |
-| **AGP** (Puertos) | `https://www.agpsau.gob.ar/llamados/82` | ⏳ Pendiente | Administración General de Puertos S.E. |
+| **AGP** (Puertos) | `https://www.agpsau.gob.ar/llamados/82` | ✅ **Activo** | Administración General de Puertos (`licitaciones/fuentes/agp.py`). Obras y mantenimiento portuario. |
 | **Aeropuertos Argentina** | `https://www.aeropuertosargentina.com/es/sobre-nosotros/licitaciones` | ⏳ Pendiente | Concesionaria aeroportuaria (AA2000). |
 | **EANA** | `https://www.eana.com.ar/licitaciones` | ⏳ Pendiente | Empresa Argentina de Navegación Aérea. |
 
