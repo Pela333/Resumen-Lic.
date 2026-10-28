@@ -38,11 +38,8 @@ class EstadoFuente:
 
     def descripcion(self) -> str:
         if self.estado == "error":
-            return f"FALLÓ: {self.mensaje}"
-        if self.alerta:
-            return (f"0 licitaciones en {self.racha} consultas seguidas. "
-                    "Revisar a mano: puede estar caída o haber cambiado su diseño.")
-        return f"OK - {self.visibles} publicada(s) en la web, {self.nuevas} nueva(s)"
+            return f"ERROR - No se pudo acceder o cambió el formato ({self.mensaje})"
+        return f"OK - {self.visibles} activa(s), {self.nuevas} nueva(s)"
 
 
 def _resumen(lics: list[Licitacion]) -> str:

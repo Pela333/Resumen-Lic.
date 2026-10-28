@@ -36,6 +36,7 @@ class Opisu(Fuente):
         ]
 
         resultados: list[Licitacion] = []
+        filas_leidas = 0
 
         for etiqueta_rubro, url_seccion in secciones:
             try:
@@ -56,6 +57,7 @@ class Opisu(Fuente):
                 celdas = [c.get_text(strip=True) for c in tr.find_all("td")]
                 if len(celdas) < 6:
                     continue
+                filas_leidas += 1
 
                 objeto = celdas[0]
                 expediente = celdas[1]
@@ -102,5 +104,8 @@ class Opisu(Fuente):
                         extra={"Estado": estado, "Municipio": municipio, "Comitente": comitente},
                     )
                 )
+
+        if filas_leidas == 0:
+            raise EstructuraCambiada("No se pudo acceder o leer ninguna fila de las tablas de OPISU.")
 
         return resultados

@@ -126,4 +126,7 @@ class HabitatPba(Fuente):
             except Exception as exc:
                 _log.debug("Error procesando detalle de Hábitat %s: %s", link_detalle, exc)
 
+        if not urls_vistas:
+            raise EstructuraCambiada("No se encontraron publicaciones de licitaciones en la página de Hábitat PBA.")
+
         return resultados

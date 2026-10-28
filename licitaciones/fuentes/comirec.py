@@ -72,10 +72,12 @@ class Comirec(Fuente):
         bloques = re.split(r"-{10,}|_{10,}", texto_completo)
 
         resultados: list[Licitacion] = []
+        bloques_validos = 0
 
         for bloque in bloques:
             if "OBJETO:" not in bloque and "Objeto:" not in bloque:
                 continue
+            bloques_validos += 1
 
             # Descartar adjudicadas
             if "adjudicad" in bloque.lower() or "finalizad" in bloque.lower():
@@ -115,5 +117,8 @@ class Comirec(Fuente):
                     apertura=fecha_str,
                 )
             )
+
+        if bloques_validos == 0:
+            raise EstructuraCambiada("No se encontraron bloques de licitaciones en la página de COMIREC.")
 
         return resultados

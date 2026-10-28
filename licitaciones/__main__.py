@@ -81,7 +81,9 @@ def main(argv: list[str] | None = None) -> int:
             log.exception("%s: error al recolectar", clave)
         db.registrar_consulta(clave, marca, estado.estado, estado.visibles, estado.nuevas, estado.mensaje)
         estado.racha = db.racha_sin_resultados(clave)
-        estado.alerta = estado.estado == "ok" and estado.visibles == 0 and estado.racha >= umbral
+        # Solo marcamos alerta si hubo un fallo real de acceso o lectura en la fuente,
+        # no cuando el organismo simplemente tiene 0 licitaciones activas vigentes.
+        estado.alerta = estado.estado == "error"
         estados.append(estado)
 
     # 2) Armar el resumen con todo lo que todavía no se envió.

@@ -67,6 +67,9 @@ class Ausol(Fuente):
         except Exception as exc:
             raise EstructuraCambiada(f"Error parseando datos JSON de AUSOL: {exc}") from exc
 
+        if not items:
+            raise EstructuraCambiada("El listado de licitaciones de AUSOL vino vacío.")
+
         from datetime import datetime
         hoy = datetime.now().strftime("%Y-%m-%d")
 
