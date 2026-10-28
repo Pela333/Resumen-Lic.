@@ -16,6 +16,22 @@ _log = logging.getLogger(__name__)
 
 TZ_ARG = ZoneInfo("America/Argentina/Buenos_Aires")
 
+_MESES_ES = {
+    "enero": 1,
+    "febrero": 2,
+    "marzo": 3,
+    "abril": 4,
+    "mayo": 5,
+    "junio": 6,
+    "julio": 7,
+    "agosto": 8,
+    "septiembre": 9,
+    "setiembre": 9,
+    "octubre": 10,
+    "noviembre": 11,
+    "diciembre": 12,
+}
+
 # Vocabulario de obras viales, arquitectura, hidráulica, infraestructura y edificaciones
 PATRON_OBRA = re.compile(
     r"\b("
@@ -47,7 +63,7 @@ EXCLUSIONES_GENERALES = re.compile(
     r"adquisici[oó]n de equipos|adquisici[oó]n de aires|"
     r"adquisici[oó]n de membrana|adquisici[oó]n de elementos|adquisici[oó]n de materiales|adquisici[oó]n de insumos|"
     r"compra de materiales|compra de insumos|provisi[oó]n de materiales|licencia[s]? de software|"
-    r"servicio de limpieza|servicio de vigilancia|servicio de seguridad|alquiler de"
+    r"infraestructura tecnol[oó]gica|servicio de limpieza|servicio de vigilancia|servicio de seguridad|alquiler de"
     r")\b",
     re.IGNORECASE,
 )
@@ -59,14 +75,34 @@ def fecha_hoy_arg() -> date:
 
 
 def parsear_fecha_apertura(texto: str) -> date | None:
-    """Extrae la fecha de apertura de un string como '12/11/2026 13:00 Hrs.'."""
-    m = re.search(r"(\d{2})/(\d{2})/(\d{4})", texto)
-    if not m:
+    """Extrae la fecha de apertura de formatos '12/11/2026', '5-11-26' o '12 de noviembre de 2026'."""
+    if not texto:
         return None
-    try:
-        return datetime(int(m.group(3)), int(m.group(2)), int(m.group(1))).date()
-    except ValueError:
-        return None
+    m = re.search(r"\b(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})\b", texto)
+    if m:
+        try:
+            dia, mes, anio = int(m.group(1)), int(m.group(2)), int(m.group(3))
+            if anio < 100:
+                anio += 2000
+            return date(anio, mes, dia)
+        except ValueError:
+            pass
+
+    m_es = re.search(
+        r"\b(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|sep?tiembre|octubre|noviembre|diciembre)\s+(?:de(?:l)?\s+)?(\d{4})\b",
+        texto,
+        re.IGNORECASE,
+    )
+    if m_es:
+        try:
+            dia = int(m_es.group(1))
+            mes = _MESES_ES[m_es.group(2).lower()]
+            anio = int(m_es.group(3))
+            return date(anio, mes, dia)
+        except (ValueError, KeyError):
+            pass
+
+    return None
 
 
 def es_de_obra_o_arquitectura(texto: str) -> bool:
@@ -99,7 +135,6 @@ def resolver_link_pliego(
         loc = resp.headers.get("Location")
         if loc:
             if loc.startswith("/"):
-                # Extrae el esquema y dominio de url_lista
                 from urllib.parse import urlparse
                 parsed = urlparse(url_lista)
                 return f"{parsed.scheme}://{parsed.netloc}{loc}"

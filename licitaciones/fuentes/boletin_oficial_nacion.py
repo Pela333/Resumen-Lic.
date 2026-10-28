@@ -9,8 +9,11 @@ from __future__ import annotations
 
 import logging
 import re
+import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
+import requests
 from bs4 import BeautifulSoup
 
 from ..modelo import NO_INFORMADO, Licitacion
@@ -29,13 +32,13 @@ class BoletinOficialNacion(Fuente):
 
     def recolectar(self) -> list[Licitacion]:
         hoy = datetime.now(TZ_ARG).date()
-        sesion = self.web.sesion
+        sesion_rapida = requests.Session()
+        sesion_rapida.headers.update({"User-Agent": "Mozilla/5.0"})
 
         try:
-            resp = sesion.get(
+            resp = sesion_rapida.get(
                 self.url,
-                headers={"User-Agent": "Mozilla/5.0"},
-                timeout=self.web.timeout,
+                timeout=12,
                 verify=False,
             )
             resp.raise_for_status()
@@ -53,23 +56,33 @@ class BoletinOficialNacion(Fuente):
 
         resultados: list[Licitacion] = []
         vistos: set[str] = set()
+        t_inicio = time.monotonic()
 
         for a in links_avisos:
+            if time.monotonic() - t_inicio > 22:
+                _log.debug("Presupuesto de tiempo alcanzado en BORA 3ª Sección; continuando.")
+                break
+
             href = a["href"]
             if href in vistos:
                 continue
             vistos.add(href)
 
             texto_resumen = a.get_text(" | ", strip=True)
+            if any(
+                x in texto_resumen.lower()
+                for x in ("adjudicaci", "preadjudicaci", "desiert", "fracasad", "deja sin efecto")
+            ):
+                continue
+
             partes = [p.strip() for p in texto_resumen.split("|") if p.strip()]
             organismo_tit = partes[0] if partes else self.nombre
             proceso_tit = partes[1] if len(partes) > 1 else ""
 
             link_aviso = f"https://www.boletinoficial.gob.ar{href}" if href.startswith("/") else href
 
-            # Consultar el detalle del aviso legal
             try:
-                r_det = sesion.get(link_aviso, headers={"User-Agent": "Mozilla/5.0"}, timeout=8, verify=False)
+                r_det = sesion_rapida.get(link_aviso, timeout=(4, 5), verify=False)
                 if r_det.status_code != 200:
                     continue
                 s_det = BeautifulSoup(r_det.text, "html.parser")
@@ -78,16 +91,23 @@ class BoletinOficialNacion(Fuente):
                     continue
                 t_det = cuerpo.get_text(" \n ", strip=True)
 
-                m_obj = re.search(r"Objeto:\s*(.*?)(?:Retiro|Lugar|Consulta|Plazo|\n\n|$)", t_det, re.DOTALL | re.IGNORECASE)
+                m_obj = re.search(
+                    r"Objeto:\s*(.*?)(?:Retiro|Lugar|Consulta|Plazo|\n\n|$)",
+                    t_det,
+                    re.DOTALL | re.IGNORECASE,
+                )
                 objeto = re.sub(r"\s+", " ", m_obj.group(1)).strip() if m_obj else proceso_tit
 
                 if not es_de_obra_o_arquitectura(objeto):
                     continue
 
-                m_ap = re.search(r"Acto de apertura.*?Plazo y horario:\s*(.*?)(?:Lugar|\n\n|$)", t_det, re.DOTALL | re.IGNORECASE)
-                ap_str = m_ap.group(1).strip() if m_ap else ""
-                
-                # Si no tiene fecha explícita de apertura en el texto, buscar cualquier fecha
+                m_ap = re.search(
+                    r"Acto de apertura.*?Plazo y horario:\s*(.*?)(?:Lugar|\n\n|$)",
+                    t_det,
+                    re.DOTALL | re.IGNORECASE,
+                )
+                ap_str = re.sub(r"\s+", " ", m_ap.group(1)).strip() if m_ap else ""
+
                 if not ap_str:
                     m_f_gen = re.search(r"(\d{1,2}/\d{1,2}/\d{4}\s+\d{2}:\d{2})", t_det)
                     ap_str = m_f_gen.group(1) if m_f_gen else ""

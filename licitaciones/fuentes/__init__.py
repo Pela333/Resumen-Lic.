@@ -1,7 +1,9 @@
 """Carga todas las fuentes disponibles para que queden registradas."""
 
 from . import (  # noqa: F401
+    absa,
     acumar,
+    aeropuertos_argentina,
     agp,
     ambiente_nacion,
     ambiente_pba,
@@ -11,11 +13,15 @@ from . import (  # noqa: F401
     aysa,
     ba_obras,
     bac,
+    boletin_oficial_caba,
     boletin_oficial_nacion,
+    boletin_oficial_pba,
     comirec,
     comprar,
     contratar,
+    corporacion_sur,
     corredores_viales,
+    dgcye_pba,
     eana,
     habitat,
     justicia_pba,
@@ -24,7 +30,9 @@ from . import (  # noqa: F401
     pbac,
     proinged,
     puerto_la_plata,
+    sedici_unlp,
     senado,
+    sistemas_gba,
     vialidad,
 )
 from .base import REGISTRO, EstructuraCambiada, Fuente

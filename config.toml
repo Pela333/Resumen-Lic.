@@ -9,7 +9,7 @@ carpeta_salida = "salida"          # donde se guardan los PDF y HTML generados
 base_de_datos = "datos/licitaciones.db"
 
 [fuentes]
-# Fuentes que se consultan en cada corrida. Se irán sumando a medida que se programen.
+# Fuentes que se consultan en cada corrida (33 colectores activos que cubren 34 portales del catálogo).
 activas = [
     "aubasa",
     "vialidad_pba",
@@ -36,6 +36,14 @@ activas = [
     "eana",
     "ambiente_pba",
     "justicia_pba",
+    "dgcye_pba",
+    "sistemas_gba",
+    "absa",
+    "aeropuertos_argentina",
+    "boletin_oficial_caba",
+    "boletin_oficial_pba",
+    "sedici_unlp",
+    "corporacion_sur",
 ]
 
 [alertas]
