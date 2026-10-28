@@ -1,9 +1,8 @@
 """Fuente: Boletín Oficial de la Provincia de Buenos Aires (BOPBA) - Sección Oficial y 135 Municipios.
 
-Utiliza el motor de búsqueda indexado de boletinoficial.gba.gob.ar (/buscar y su endpoint
-JSON /boletin/YYYY-MM-DD/paginas/OFICIAL) combinando los fragmentos de 'licitacion',
-'apertura' y 'presupuesto' por página (#page=N) para reconstruir avisos municipales y
-provinciales de obras sin descargar el archivo PDF diario de 75 MB.
+Consulta directamente el endpoint JSON diario de páginas indexadas
+(/boletin/YYYY-MM-DD/paginas/OFICIAL) sin pasar por el buscador global pesado (/buscar),
+combinando los fragmentos de 'licitacion' y 'apertura' por página (#page=N) en ~1 segundo por petición.
 URL Oficial: https://boletinoficial.gba.gob.ar/
 """
 
@@ -11,10 +10,12 @@ from __future__ import annotations
 
 import logging
 import re
+import time
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
+import requests
 from bs4 import BeautifulSoup
 
 from ..modelo import NO_INFORMADO, Licitacion
@@ -24,7 +25,17 @@ from .base import EstructuraCambiada, Fuente, registrar
 _log = logging.getLogger(__name__)
 TZ_ARG = ZoneInfo("America/Argentina/Buenos_Aires")
 
-URL_BUSCAR = "https://boletinoficial.gba.gob.ar/buscar"
+
+def _ultimos_dias_habiles(hoy: date, cantidad: int = 3) -> list[date]:
+    dias: list[date] = []
+    actual = hoy
+    intentos = 0
+    while len(dias) < cantidad and intentos < 10:
+        if actual.weekday() < 5:
+            dias.append(actual)
+        actual -= timedelta(days=1)
+        intentos += 1
+    return dias
 
 
 @registrar
@@ -35,63 +46,52 @@ class BoletinOficialPba(Fuente):
 
     def recolectar(self) -> list[Licitacion]:
         hoy = datetime.now(TZ_ARG).date()
-        desde = hoy - timedelta(days=5)
-        sesion = self.web.sesion
+        dias_consulta = _ultimos_dias_habiles(hoy, cantidad=3)
+
+        sesion = requests.Session()
+        sesion.headers.update({"User-Agent": "Mozilla/5.0", "Accept": "application/json"})
 
         paginas_fragmentos: dict[str, list[str]] = defaultdict(list)
+        respuestas_ok = 0
+        ultimo_error: Exception | None = None
+        t_inicio = time.monotonic()
 
-        import requests
-        sesion_rapida = requests.Session()
-        for palabra in ("licitacion", "apertura"):
-            try:
-                resp = sesion_rapida.get(
-                    URL_BUSCAR,
-                    params={
-                        "search[date_gteq]": desde.strftime("%d/%m/%Y"),
-                        "search[date_lteq]": hoy.strftime("%d/%m/%Y"),
-                        "search[section]": "OFICIAL",
-                        "search[words]": palabra,
-                        "search[order]": "recent",
-                    },
-                    headers={"User-Agent": "Mozilla/5.0"},
-                    timeout=(6, 18),
-                    verify=False,
-                )
-                resp.raise_for_status()
-            except Exception as exc:
-                if palabra == "licitacion":
-                    raise EstructuraCambiada(f"Error consultando buscador de BOPBA: {exc}") from exc
-                continue
-
-            soup = BeautifulSoup(resp.text, "html.parser")
-            for box in soup.select(".result-box")[:3]:
-                for a, exc_p in zip(box.find_all("a", class_="page"), box.find_all("p", class_="excerpt")):
-                    href = a.get("href", "").strip()
-                    if href:
-                        paginas_fragmentos[href].append(exc_p.get_text(" ", strip=True))
-
-                pag = box.select_one(".ajax-paginator")
-                if not pag or not pag.get("data-link"):
-                    continue
-                link_ajax = pag["data-link"]
-                total = int(pag.get("data-total", "2"))
-                max_pnum = min(6, (total + 1) // 2 + 1)
-                for pnum in range(2, max_pnum + 1):
+        for dia in dias_consulta:
+            f_iso = dia.strftime("%Y-%m-%d")
+            url_dia = f"https://boletinoficial.gba.gob.ar/boletin/{f_iso}/paginas/OFICIAL"
+            for palabra in ("licitacion", "apertura"):
+                for pnum in range(1, 6):
+                    if time.monotonic() - t_inicio > 28:
+                        break
                     try:
-                        rj = sesion_rapida.get(
-                            f"https://boletinoficial.gba.gob.ar{link_ajax}",
-                            params={"pageNumber": pnum},
-                            headers={"User-Agent": "Mozilla/5.0"},
-                            timeout=(4, 5),
+                        resp = sesion.get(
+                            url_dia,
+                            params={"q": palabra, "pageNumber": pnum},
+                            timeout=(8, 18),
                             verify=False,
-                        ).json()
-                        sp = BeautifulSoup("".join(rj.get("html", [])), "html.parser")
-                        for a, exc_p in zip(sp.find_all("a", class_="page"), sp.find_all("p", class_="excerpt")):
+                        )
+                        if resp.status_code != 200:
+                            break
+                        rj = resp.json()
+                        respuestas_ok += 1
+                        html_parts = rj.get("html") or []
+                        if not html_parts:
+                            break
+                        sp = BeautifulSoup("".join(html_parts), "html.parser")
+                        pages = sp.find_all("a", class_="page")
+                        excerpts = sp.find_all("p", class_="excerpt")
+                        if not pages:
+                            break
+                        for a, exc_p in zip(pages, excerpts):
                             href = a.get("href", "").strip()
                             if href:
                                 paginas_fragmentos[href].append(exc_p.get_text(" ", strip=True))
-                    except Exception:
+                    except Exception as exc:
+                        ultimo_error = exc
                         break
+
+        if respuestas_ok == 0 and ultimo_error is not None:
+            raise EstructuraCambiada(f"Error consultando endpoint JSON de BOPBA: {ultimo_error}") from ultimo_error
 
         resultados: list[Licitacion] = []
 
