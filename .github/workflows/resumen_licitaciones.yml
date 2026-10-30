@@ -1,10 +1,10 @@
 name: Resumen de Licitaciones
 
 on:
-  schedule:
-    # Lunes, Miércoles y Viernes a las 07:25 AM Argentina (10:25 AM UTC)
-    # Minuto 25 para evitar la congestión masiva de GitHub Actions en los minutos :00 y :30
-    - cron: '25 10 * * 1,3,5'
+  # El cron automatico en la nube se pausa para evitar el geobloqueo de IP de servidores estatales (COMPR.AR, CONTRAT.AR, PBAC, BORA).
+  # La ejecucion programada oficial corre localmente en Windows (Task Scheduler) a las 08:00 AM con las 33 fuentes completas.
+  # schedule:
+  #   - cron: '25 10 * * 1,3,5'
   workflow_dispatch: # Permite dispararlo manualmente en cualquier momento desde la web de GitHub
 
 permissions:
