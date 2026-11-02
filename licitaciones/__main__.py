@@ -86,10 +86,10 @@ def main(argv: list[str] | None = None) -> int:
             estado.nuevas = sum(db.guardar(lic, marca) for lic in encontradas)
             log.info("%s: %d visibles, %d nuevas", clave, estado.visibles, estado.nuevas)
         except EstructuraCambiada as exc:
-            estado.estado, estado.mensaje = "error", f"la página cambió de estructura ({exc})"
+            estado.estado, estado.mensaje = "error", str(exc)
             log.error("%s: %s", clave, estado.mensaje)
         except Exception as exc:  # caída, timeout, bloqueo, etc.
-            estado.estado, estado.mensaje = "error", f"{type(exc).__name__}: {exc}"
+            estado.estado, estado.mensaje = "error", f"Servidor no disponible ({type(exc).__name__}: {exc})"
             log.exception("%s: error al recolectar", clave)
         db.registrar_consulta(clave, marca, estado.estado, estado.visibles, estado.nuevas, estado.mensaje)
         estado.racha = db.racha_sin_resultados(clave)

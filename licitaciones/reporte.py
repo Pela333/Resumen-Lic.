@@ -38,7 +38,7 @@ class EstadoFuente:
 
     def descripcion(self) -> str:
         if self.estado == "error":
-            return f"ERROR - No se pudo acceder o cambió el formato ({self.mensaje})"
+            return f"ERROR: {self.mensaje}" if self.mensaje else "ERROR - No se pudo acceder"
         return f"OK - {self.visibles} activa(s), {self.nuevas} nueva(s)"
 
 

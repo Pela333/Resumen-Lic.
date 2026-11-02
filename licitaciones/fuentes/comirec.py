@@ -56,11 +56,8 @@ class Comirec(Fuente):
         hoy = datetime.now(TZ_ARG).date()
         sesion = self.web.sesion
 
-        try:
-            resp = sesion.get(self.url, timeout=self.web.timeout)
-            resp.raise_for_status()
-        except Exception as exc:
-            raise EstructuraCambiada(f"Error al conectar con COMIREC: {exc}") from exc
+        resp = sesion.get(self.url, timeout=self.web.timeout)
+        resp.raise_for_status()
 
         soup = BeautifulSoup(resp.text, "html.parser")
         reg = soup.find(class_="region-content")
