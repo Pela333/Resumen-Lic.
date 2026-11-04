@@ -13,6 +13,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from typing import Any
 
+from ..filtro import es_de_obra_o_arquitectura
 from ..modelo import NO_INFORMADO, Licitacion
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -66,6 +67,9 @@ class CorredoresViales(Fuente):
             numero = str(it.get("numero") or lic_id)
             tipo_nombre = str(it.get("tipo_nombre") or "Licitación")
             requerimiento = str(it.get("requerimiento") or "").strip()
+
+            if not es_de_obra_o_arquitectura(requerimiento):
+                continue
             link = f"https://corredoresvialessa.com.ar/licitaciones/{lic_id}" if lic_id else self.url
 
             f_pres = it.get("fecha_presentacion_de_ofertas") or NO_INFORMADO

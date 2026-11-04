@@ -157,13 +157,21 @@ class BoletinOficialPba(Fuente):
             )
             valor_pliego = m_pliego.group(1).strip(" .") if m_pliego else NO_INFORMADO
 
-            objeto_limpio = re.sub(
-                r"BOLETÍN OFICIAL DE LA PROVINCIA DE BUENOS AIRES\s*La Plata\s*>\s*[a-záéíóú]+\s+\d+\s+de\s+[a-záéíóú]+\s+de\s+\d{4}",
-                "",
+            m_denom = re.search(
+                r"(?:Denominaci[óo]n|Objeto)\s*[:\-]?\s*(.*?)(?:\.\s*(?:Fecha|Apertura|Valor|Presupuesto|Expediente)|Fecha\s+de\s+apertura|Valor\s+de(?:l)?\s+pliego|Presupuesto\s+oficial|\||$)",
                 texto,
-                flags=re.IGNORECASE,
+                re.IGNORECASE,
             )
-            objeto_limpio = re.sub(r"\s+", " ", objeto_limpio.replace("\u25e2", "")).strip(" |.-")
+            if m_denom and len(m_denom.group(1).strip()) > 10:
+                objeto_limpio = re.sub(r"\s+", " ", m_denom.group(1)).strip(" |.-")
+            else:
+                objeto_limpio = re.sub(
+                    r"BOLETÍN OFICIAL DE LA PROVINCIA DE BUENOS AIRES\s*La Plata\s*>\s*[a-záéíóú]+\s+\d+\s+de\s+[a-záéíóú]+\s+de\s+\d{4}",
+                    "",
+                    texto,
+                    flags=re.IGNORECASE,
+                )
+                objeto_limpio = re.sub(r"\s+", " ", objeto_limpio.replace("\u25e2", "")).strip(" |.-")
 
             link_completo = f"https://boletinoficial.gba.gob.ar{href}" if href.startswith("/") else href
             id_fuente = re.sub(r"[^a-zA-Z0-9_-]", "_", href.strip("/"))

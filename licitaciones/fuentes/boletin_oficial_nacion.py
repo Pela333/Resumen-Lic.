@@ -92,11 +92,11 @@ class BoletinOficialNacion(Fuente):
                 t_det = cuerpo.get_text(" \n ", strip=True)
 
                 m_obj = re.search(
-                    r"Objeto:\s*(.*?)(?:Retiro|Lugar|Consulta|Plazo|\n\n|$)",
+                    r"Objeto:\s*(.*?)(?:PRESENTACI[OÓ]N|APERTURA|RETIRO|LUGAR|CONSULTA|INFORMES|PLAZO|VALOR|PRESUPUESTO|\n\n|$)",
                     t_det,
                     re.DOTALL | re.IGNORECASE,
                 )
-                objeto = re.sub(r"\s+", " ", m_obj.group(1)).strip() if m_obj else proceso_tit
+                objeto = re.sub(r"\s+", " ", m_obj.group(1)).strip(" “\"'”").strip() if m_obj else proceso_tit
 
                 if not es_de_obra_o_arquitectura(objeto):
                     continue

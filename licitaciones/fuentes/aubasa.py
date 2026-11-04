@@ -17,6 +17,7 @@ import unicodedata
 
 from bs4 import Tag
 
+from ..filtro import es_de_obra_o_arquitectura
 from ..modelo import Licitacion
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -64,8 +65,12 @@ class Aubasa(Fuente):
         actual: Licitacion | None = None
         for el in elementos:
             if el.name == "table":
-                actual = self._leer_tabla(el)
-                resultados.append(actual)
+                candidata = self._leer_tabla(el)
+                if es_de_obra_o_arquitectura(candidata.objeto):
+                    actual = candidata
+                    resultados.append(actual)
+                else:
+                    actual = None
             elif actual is not None and actual.link == self.url:
                 href = el["href"]
                 actual.link = href

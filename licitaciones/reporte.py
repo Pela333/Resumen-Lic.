@@ -42,15 +42,32 @@ class EstadoFuente:
         return f"OK - {self.visibles} activa(s), {self.nuevas} nueva(s)"
 
 
-def _resumen(lics: list[Licitacion]) -> str:
+def _resumen_conteo(lics: list[Licitacion]) -> tuple[str, list[tuple[str, int]]]:
     if not lics:
-        return "No se encontraron licitaciones nuevas desde el último envío."
+        return "No se encontraron licitaciones nuevas desde el último envío.", []
     por_org: dict[str, int] = {}
     for lic in lics:
-        por_org[lic.organismo] = por_org.get(lic.organismo, 0) + 1
-    detalle = "; ".join(f"{n} de {org}" for org, n in por_org.items())
+        org = lic.organismo.strip()
+        por_org[org] = por_org.get(org, 0) + 1
     plural = "licitación nueva" if len(lics) == 1 else "licitaciones nuevas"
-    return f"{len(lics)} {plural} ({detalle})"
+    titulo = f"{len(lics)} {plural}"
+    lista = sorted(por_org.items(), key=lambda x: (-x[1], x[0]))
+    return titulo, lista
+
+
+def _tiene_dato(val: str) -> bool:
+    if not val:
+        return False
+    v = val.strip().lower()
+    return v not in (
+        "no informado en la web",
+        "no informado",
+        "no publicado",
+        "no especificado",
+        "s/d",
+        "-",
+        "",
+    )
 
 
 # ----------------------------------------------------------------- HTML (mail)
@@ -59,23 +76,49 @@ def generar_html(lics: list[Licitacion], estados: list[EstadoFuente], fecha: str
     e = html.escape
     tarjetas = []
     for lic in lics:
-        filas = "".join(
-            f'<tr><td style="padding:4px 12px 4px 0;color:#5b6472;vertical-align:top;white-space:nowrap">{e(etq)}</td>'
-            f'<td style="padding:4px 0;color:#1d2433">{e(getattr(lic, campo))}</td></tr>'
-            for etq, campo in CAMPOS
+        filas = []
+        # Objeto (siempre)
+        filas.append(
+            f'<tr><td style="padding:4px 12px 4px 0;color:#5b6472;vertical-align:top;font-weight:600;white-space:nowrap">Objeto</td>'
+            f'<td style="padding:4px 0;color:#1d2433;line-height:1.45">{e(lic.objeto)}</td></tr>'
         )
-        filas += "".join(
-            f'<tr><td style="padding:4px 12px 4px 0;color:#5b6472;vertical-align:top">{e(k)}</td>'
-            f'<td style="padding:4px 0;color:#1d2433">{e(v)}</td></tr>'
-            for k, v in lic.extra.items()
-        )
+        # Presupuesto oficial (solo si lo tiene)
+        if _tiene_dato(lic.presupuesto_oficial):
+            filas.append(
+                f'<tr><td style="padding:4px 12px 4px 0;color:#0b5cad;vertical-align:top;font-weight:bold;white-space:nowrap">Presupuesto</td>'
+                f'<td style="padding:4px 0;color:#0b5cad;font-weight:bold">{e(lic.presupuesto_oficial)}</td></tr>'
+            )
+        # Apertura (solo si lo tiene)
+        if _tiene_dato(lic.apertura):
+            filas.append(
+                f'<tr><td style="padding:4px 12px 4px 0;color:#5b6472;vertical-align:top;font-weight:600;white-space:nowrap">Apertura</td>'
+                f'<td style="padding:4px 0;color:#1d2433">{e(lic.apertura)}</td></tr>'
+            )
+
+        filas_html = "".join(filas)
         tarjetas.append(f"""
-        <div style="border:1px solid #dde3ec;border-left:5px solid #0b5cad;border-radius:8px;padding:16px;margin:0 0 16px">
-          <div style="font-size:12px;color:#0b5cad;font-weight:bold;text-transform:uppercase">{e(lic.organismo)}</div>
-          <table style="border-collapse:collapse;font-size:14px;margin-top:8px">{filas}</table>
-          <a href="{e(lic.link)}" style="display:inline-block;margin-top:10px;background:#0b5cad;color:#fff;
-             text-decoration:none;padding:8px 14px;border-radius:6px;font-size:13px">Ver publicación oficial</a>
+        <div style="border:1px solid #dde3ec;border-left:5px solid #0b5cad;border-radius:8px;padding:16px;margin:0 0 16px;background:#ffffff">
+          <div style="font-size:13px;color:#0b5cad;font-weight:bold;text-transform:uppercase;letter-spacing:0.3px">{e(lic.organismo)}</div>
+          <table style="border-collapse:collapse;font-size:14px;margin-top:10px;width:100%">{filas_html}</table>
+          <a href="{e(lic.link)}" style="display:inline-block;margin-top:12px;background:#0b5cad;color:#fff;
+             text-decoration:none;padding:8px 14px;border-radius:6px;font-size:13px;font-weight:600">Ver publicación oficial</a>
         </div>""")
+
+    titulo_resumen, lista_entes = _resumen_conteo(lics)
+    if lista_entes:
+        items_entes = "".join(
+            f'<li style="padding:2px 0;color:#1d2433">{e(org)} - <b>{n}</b></li>'
+            for org, n in lista_entes
+        )
+        bloque_resumen = f"""
+        <div style="margin:0 0 20px;padding:14px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #0f2747;border-radius:6px">
+          <div style="font-size:16px;font-weight:bold;color:#0f2747;margin-bottom:8px">{e(titulo_resumen)}</div>
+          <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6">
+            {items_entes}
+          </ul>
+        </div>"""
+    else:
+        bloque_resumen = f'<p style="font-size:15px;color:#1d2433;margin-top:0"><b>{e(titulo_resumen)}</b></p>'
 
     filas_estado = "".join(
         f'<tr><td style="padding:6px 10px;border-top:1px solid #eef1f5">'
@@ -98,25 +141,38 @@ def generar_html(lics: list[Licitacion], estados: list[EstadoFuente], fecha: str
   </div>
   <div style="background:#fff;border-radius:0 0 10px 10px;padding:20px">
     {aviso}
-    <p style="font-size:15px;color:#1d2433;margin-top:0"><b>{e(_resumen(lics))}</b></p>
+    {bloque_resumen}
     {"".join(tarjetas)}
     <h3 style="font-size:15px;color:#1d2433;margin:24px 0 8px">Estado de las fuentes</h3>
     <table style="border-collapse:collapse;width:100%;font-size:13px">{filas_estado}</table>
     <p style="font-size:12px;color:#8a93a3;margin-top:20px">
       Los datos se copian textualmente de cada sitio oficial; verificar siempre en el enlace original.
-      El detalle completo va en el PDF adjunto.</p>
+      El detalle completo (números de proceso, pliegos, etc.) va en el PDF adjunto.</p>
   </div>
 </div></body></html>"""
 
 
 def generar_texto(lics: list[Licitacion], estados: list[EstadoFuente], fecha: str) -> str:
     """Versión en texto plano, para clientes de correo que no muestran HTML."""
-    lineas = [f"Resumen de licitaciones - {fecha}", "", _resumen(lics), ""]
+    titulo_resumen, lista_entes = _resumen_conteo(lics)
+    lineas = [f"Resumen de licitaciones - {fecha}", "", titulo_resumen]
+    if lista_entes:
+        for org, n in lista_entes:
+            lineas.append(f"- {org} - {n}")
+    lineas.append("")
+
     for lic in lics:
         lineas.append(f"== {lic.organismo} ==")
-        lineas += [f"{etq}: {getattr(lic, campo)}" for etq, campo in CAMPOS]
-        lineas += [f"{k}: {v}" for k, v in lic.extra.items()]
-        lineas += [f"Enlace: {lic.link}", ""]
+        lineas.append(f"Objeto: {lic.objeto}")
+        if _tiene_dato(lic.presupuesto_oficial):
+            lineas.append(f"Presupuesto oficial: {lic.presupuesto_oficial}")
+        if _tiene_dato(lic.apertura):
+            lineas.append(f"Apertura: {lic.apertura}")
+        lineas.append(f"Enlace: {lic.link}")
+        lineas.append("")
+
+    lineas.append("El detalle completo va en el PDF adjunto.")
+    lineas.append("")
     lineas.append("Estado de las fuentes:")
     lineas += [f"- {s.nombre}: {s.descripcion()}" for s in estados]
     return "\n".join(lineas)
@@ -186,9 +242,14 @@ class _PDF(FPDF):
 def generar_pdf(lics: list[Licitacion], estados: list[EstadoFuente], fecha: str, destino: Path) -> Path:
     pdf = _PDF(fecha)
     pdf.add_page()
-    pdf.set_font(pdf.familia, "B", 11)
-    pdf.multi_cell(0, 6, pdf.t(_resumen(lics)), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.ln(3)
+    if not lics:
+        pdf.set_font(pdf.familia, "I", 11)
+        pdf.cell(0, 8, pdf.t("No se encontraron licitaciones nuevas desde el último envío."), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    else:
+        pdf.set_font(pdf.familia, "B", 11)
+        pdf.set_text_color(15, 39, 71)
+        pdf.cell(0, 7, pdf.t(f"Licitaciones vigentes ({len(lics)})"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        pdf.ln(2)
 
     for lic in lics:
         if pdf.get_y() > pdf.h - 70:
@@ -209,23 +270,6 @@ def generar_pdf(lics: list[Licitacion], estados: list[EstadoFuente], fecha: str,
         pdf.set_text_color(11, 92, 173)
         pdf.write(5.5, pdf.t(lic.link), link=lic.link)
         pdf.ln(10)
-
-    if pdf.get_y() > pdf.h - 70:
-        pdf.add_page()
-    pdf.set_text_color(29, 36, 51)
-    pdf.set_font(pdf.familia, "B", 11)
-    pdf.cell(0, 7, pdf.t("Estado de las fuentes"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    for s in estados:
-        if pdf.get_y() > pdf.h - 25:
-            pdf.add_page()
-        problema = s.estado == "error" or s.alerta
-        pdf.set_font(pdf.familia, "B", 9)
-        pdf.set_text_color(29, 36, 51)
-        pdf.multi_cell(0, 5.5, pdf.t(s.nombre), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-        pdf.set_font(pdf.familia, "", 9)
-        pdf.set_text_color(*((180, 35, 24) if problema else (6, 118, 71)))
-        pdf.multi_cell(0, 5.5, pdf.t(s.descripcion()), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-        pdf.ln(1)
 
     destino.parent.mkdir(parents=True, exist_ok=True)
     pdf.output(str(destino))

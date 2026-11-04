@@ -20,6 +20,7 @@ from dotenv import load_dotenv
 
 from . import correo, reporte
 from .basedatos import BaseDatos
+from .filtro import cumple_filtro_monto, es_de_obra_o_arquitectura
 from .fuentes import REGISTRO, EstructuraCambiada
 from .web import ClienteWeb
 
@@ -71,6 +72,10 @@ def main(argv: list[str] | None = None) -> int:
     web = ClienteWeb()
     umbral = int(cfg["alertas"]["corridas_sin_resultados_para_avisar"])
 
+    cfg_filtros = cfg.get("filtros", {})
+    presupuesto_minimo = float(cfg_filtros.get("presupuesto_minimo_pesos", 0))
+    descartar_sin_presupuesto = bool(cfg_filtros.get("descartar_si_sin_presupuesto", False))
+
     # 1) Recolectar cada fuente por separado: si una falla, las demás siguen.
     estados: list[reporte.EstadoFuente] = []
     for clave in cfg["fuentes"]["activas"]:
@@ -83,8 +88,13 @@ def main(argv: list[str] | None = None) -> int:
         try:
             encontradas = fuente.recolectar()
             estado.visibles = len(encontradas)
-            estado.nuevas = sum(db.guardar(lic, marca) for lic in encontradas)
-            log.info("%s: %d visibles, %d nuevas", clave, estado.visibles, estado.nuevas)
+            pertinentes = [
+                lic for lic in encontradas
+                if es_de_obra_o_arquitectura(lic.objeto, lic.organismo)
+                and cumple_filtro_monto(lic.presupuesto_oficial, presupuesto_minimo, descartar_sin_presupuesto)
+            ]
+            estado.nuevas = sum(db.guardar(lic, marca) for lic in pertinentes)
+            log.info("%s: %d visibles, %d pertinentes, %d nuevas", clave, estado.visibles, len(pertinentes), estado.nuevas)
         except EstructuraCambiada as exc:
             estado.estado, estado.mensaje = "error", str(exc)
             log.error("%s: %s", clave, estado.mensaje)
@@ -99,7 +109,16 @@ def main(argv: list[str] | None = None) -> int:
         estados.append(estado)
 
     # 2) Armar el resumen con todo lo que todavía no se envió.
-    pendientes = db.pendientes()
+    pendientes_raw = db.pendientes()
+    pendientes = [
+        lic for lic in pendientes_raw
+        if es_de_obra_o_arquitectura(lic.objeto, lic.organismo)
+        and cumple_filtro_monto(lic.presupuesto_oficial, presupuesto_minimo, descartar_sin_presupuesto)
+    ]
+    descartadas = [lic.uid for lic in pendientes_raw if lic not in pendientes]
+    if descartadas:
+        db.marcar_enviadas(descartadas, f"{marca}_no_pertinente")
+        log.info("Descartadas %d licitaciones pendientes no pertinentes por filtro temático/monto", len(descartadas))
     hay_problemas = any(s.estado == "error" or s.alerta for s in estados)
     if not pendientes and not hay_problemas and not cfg["mail"]["enviar_si_no_hay_novedades"]:
         log.info("Sin novedades; no se envía mail (según config.toml)")

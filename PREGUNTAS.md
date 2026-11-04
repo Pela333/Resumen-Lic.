@@ -12,9 +12,15 @@
 * **Criterio de vigencia de fechas:**
   * **Solo licitaciones abiertas / vigentes:** Se descartan automáticamente llamados cuya fecha de apertura ya haya pasado (`fecha_apertura < hoy`) o figuren como adjudicadas/finalizadas, aunque el organismo las siga mostrando en su sitio.
 * **Criterio de filtrado temático:**
-  * **NO** utilizar filtros de palabras clave rígidas (evitar descartar licitaciones por diferencias léxicas, ej.: "pavimento" vs "carpeta asfáltica" vs "hormigonado").
-  * En portales específicos de obra (Vialidad, Infraestructura, AUBASA, OPISU, etc.), se recolecta **todo** lo publicado, ya que por definición pertenece al rubro.
-  * En portales generalistas y boletines (Boletín Oficial PBA, Boletín Oficial Nación), se capturan también llamados a licitación pública de municipios (La Plata, Vicente López, Saladillo, Quilmes, Roque Pérez, Avellaneda, Lanús, Morón, etc.).
+  * **Empresa constructora:** Obras de arquitectura, infraestructura (hidráulica, cloacal, agua, eléctrica de media/alta tensión, portuaria) y viales de cualquier tipo.
+  * **Exclusiones automáticas:**
+    - Compras y adquisiciones de bienes, suministros e insumos sueltos (indumentaria/uniformes, luminarias/lámparas LED, caños/termofusión, insumos de impermeabilización, repuestos de aire acondicionado, reductores de velocidad plásticos, gases, etc.).
+    - Servicios menores de mantenimiento de equipos o aparatos puntuales (equipos de aire acondicionado, grupos electrógenos, luminarias cialíticas de quirófano, instrumental médico, ascensores).
+    - Tecnología, software y servicios en la nube (desarrollo evolutivo, soporte en la nube, plataformas web, fibra óptica pura de datos).
+    - Pertrechos navales y equipamiento militar bélico (destructores, buques, puentes de navegación, sistemas hidráulicos navales).
+    - Servicios generales no constructivos (limpieza, seguridad privada, seguros/pólizas, catering).
+  * **Portales y boletines:** Se monitorean los 34 portales y boletines oficiales (Nación, CABA, PBA y municipios) aplicando este filtrado tanto en origen como de manera centralizada.
+  * **Filtro de montos mínimos:** Configurable en `config.toml` (`[filtros].presupuesto_minimo_pesos`). Permite establecer un umbral de presupuesto oficial mínimo para descartar obras pequeñas.
   * Catálogo completo de enlaces y estado de desarrollo: ver archivo [FUENTES.md](FUENTES.md).
 
 ---
@@ -77,9 +83,10 @@ Para cada licitación detectada, el sistema intentará recopilar los siguientes 
 
 ## 7. Decisiones del Usuario y Configuración
 
-1. **Filtro de obras vs. servicios:**
-   * **Criterio general:** Solo se incluyen **obras** (arquitectura, viales, hidráulicas, etc.).
-   * **Excepción para prueba piloto:** Para este primer test se incluye la licitación actual de AUBASA (servicio de monitoreo) para validar la recepción del mail y el diseño del PDF.
+1. **Filtro de obras vs. compras y servicios:**
+   * **Criterio estricto:** Solo se incluyen **obras** (arquitectura, viales, hidráulicas, sanitarias, eléctricas de envergadura, etc.).
+   * Se descartan compras de insumos, servicios de mantenimiento de equipamiento puntual, software/nube y equipamiento naval.
+   * Filtro de monto mínimo configurable en `config.toml` (`presupuesto_minimo_pesos`).
 2. **Cuenta de envío:**
    * Configurada cuenta Gmail dedicada: `ignaciobordoli44@gmail.com` con contraseña de aplicación de 16 caracteres. Destinatarios: `ignaciobordoli44@gmail.com` y `gremiro.pf@gmail.com`.
 

@@ -51,6 +51,15 @@ activas = [
 # el mail lo avisa (puede estar caída o haber cambiado su diseño).
 corridas_sin_resultados_para_avisar = 3
 
+[filtros]
+# Filtro de obras y presupuestos para empresa constructora.
+# Monto mínimo de Presupuesto Oficial en pesos (ARS) para incluir una licitación.
+# Poner 0 para no filtrar por monto mínimo (acepta cualquier obra pertinente sin importar el monto).
+presupuesto_minimo_pesos = 0
+# Si es true, descarta licitaciones donde el presupuesto no está publicado en la web ("No informado en la web").
+# Si es false (recomendado), las conserva para no perder licitaciones de municipios cuyo aviso no publica el monto.
+descartar_si_sin_presupuesto = false
+
 [mail]
 asunto = "Resumen de licitaciones - {fecha}"
 # Si no hay licitaciones nuevas, igual se envía el mail con el estado de las fuentes.

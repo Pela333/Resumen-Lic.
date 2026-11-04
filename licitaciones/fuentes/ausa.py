@@ -14,6 +14,7 @@ import logging
 from datetime import datetime
 from typing import Any
 
+from ..filtro import es_de_obra_o_arquitectura
 from ..modelo import NO_INFORMADO, Licitacion
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -67,6 +68,10 @@ class Ausa(Fuente):
                         continue
                     if d.get("estado") != 1:
                         continue
+
+                objeto = (d.get("descripcion") or "").strip()
+                if not es_de_obra_o_arquitectura(objeto):
+                    continue
 
                 resultados.append(self._mapear(d, tipo_nombre))
 
