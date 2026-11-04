@@ -82,7 +82,7 @@ class AeropuertosArgentina(Fuente):
             if not titulo:
                 continue
 
-            if not es_de_obra_o_arquitectura(f"{titulo} {desc} {modalidad}"):
+            if not es_de_obra_o_arquitectura(f"{titulo} {desc} {modalidad}", organismo=self.nombre):
                 continue
 
             id_pub = str(item.get("ID_Publicacion") or "")

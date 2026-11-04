@@ -73,7 +73,7 @@ class Senado(Fuente):
             if f_dt < hoy:
                 continue
 
-            if not es_de_obra_o_arquitectura(objeto):
+            if not es_de_obra_o_arquitectura(objeto, organismo=self.nombre):
                 continue
 
             m_exp = re.search(r"([A-Z0-9\-]+/\d{4})", exp_raw)

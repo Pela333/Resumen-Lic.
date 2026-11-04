@@ -63,6 +63,9 @@ class Proinged(Fuente):
             m_obj = re.search(r'["“](.*?)["”]', titulo)
             objeto = m_obj.group(1).strip() if m_obj else titulo
 
+            if not es_de_obra_o_arquitectura(f"{titulo} {objeto}", organismo=self.nombre):
+                continue
+
             # Buscar enlace a pre-pliego o circular si existe
             a_link = parent.find("a", href=True) if parent else None
             link = a_link["href"] if a_link else self.url

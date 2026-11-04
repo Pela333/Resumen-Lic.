@@ -70,7 +70,7 @@ class Ausa(Fuente):
                         continue
 
                 objeto = (d.get("descripcion") or "").strip()
-                if not es_de_obra_o_arquitectura(objeto):
+                if not es_de_obra_o_arquitectura(objeto, organismo=self.nombre):
                     continue
 
                 resultados.append(self._mapear(d, tipo_nombre))

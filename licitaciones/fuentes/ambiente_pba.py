@@ -13,6 +13,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from bs4 import BeautifulSoup
 
+from ..filtro import es_de_obra_o_arquitectura
 from ..modelo import NO_INFORMADO, Licitacion
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -86,6 +87,9 @@ class AmbientePba(Fuente):
 
             f_dt = _parsear_fecha_es(ap_str)
             if f_dt is None or f_dt < hoy:
+                continue
+
+            if not es_de_obra_o_arquitectura(titulo, organismo=self.nombre):
                 continue
 
             m_num = re.search(r"N[°º]\s*([0-9/\-]+)", titulo, re.IGNORECASE)

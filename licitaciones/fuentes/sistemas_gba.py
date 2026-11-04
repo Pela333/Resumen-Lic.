@@ -73,11 +73,8 @@ class SistemasGba(Fuente):
             if not f_dt or f_dt < hoy:
                 continue
 
-            es_org_obra = any(
-                k in organismo.lower()
-                for k in ("vialidad", "infraestructura", "obra", "arquitectura", "hidráulica", "hidraulica", "vivienda")
-            )
-            if not es_org_obra and not es_de_obra_o_arquitectura(objeto):
+            org_label = f"GBA - {organismo}" if organismo else self.nombre
+            if not es_de_obra_o_arquitectura(objeto, organismo=org_label):
                 continue
 
             numero = f"{tipo_proc} {nro_proc}/{anio_proc} (Exp. {expediente})"
@@ -90,7 +87,7 @@ class SistemasGba(Fuente):
                 Licitacion(
                     fuente=self.clave,
                     id_fuente=id_fuente,
-                    organismo=f"GBA - {organismo}",
+                    organismo=org_label,
                     numero=numero,
                     objeto=objeto,
                     link=self.url,

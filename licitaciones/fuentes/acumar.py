@@ -80,7 +80,7 @@ class Acumar(Fuente):
             if f_dt < hoy:
                 continue
 
-            if not es_de_obra_o_arquitectura(objeto):
+            if not es_de_obra_o_arquitectura(objeto, organismo=self.nombre):
                 continue
 
             a_tag = tr.find("a", href=True)

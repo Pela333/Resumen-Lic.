@@ -12,6 +12,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from bs4 import BeautifulSoup
 
+from ..filtro import es_de_obra_o_arquitectura
 from ..modelo import NO_INFORMADO, Licitacion
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -118,6 +119,8 @@ class MinfraPba(Fuente):
                 extra["Expediente"] = expediente
 
             organismo = f"Min. Infraestructura PBA - {comitente}" if comitente else self.nombre
+            if not es_de_obra_o_arquitectura(objeto, organismo=organismo):
+                continue
 
             resultados.append(
                 Licitacion(

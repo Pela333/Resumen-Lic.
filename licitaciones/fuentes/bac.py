@@ -80,12 +80,13 @@ class Bac(Fuente):
                 if fecha_dt is None or fecha_dt < hoy:
                     continue
 
+                organismo = f"GCBA - {unidad}" if unidad else self.nombre
+
                 # En portal generalista porteño, se filtran las licitaciones pertinentes de obra/infraestructura
-                if not es_de_obra_o_arquitectura(objeto):
+                if not es_de_obra_o_arquitectura(objeto, organismo=organismo):
                     continue
 
                 vistos.add(numero)
-                organismo = f"GCBA - {unidad}" if unidad else self.nombre
 
                 resultados.append(
                     Licitacion(

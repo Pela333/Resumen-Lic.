@@ -11,7 +11,7 @@ import logging
 from bs4 import BeautifulSoup
 
 from ..modelo import Licitacion
-from .aspnet_comun import fecha_hoy_arg, parsear_fecha_apertura
+from .aspnet_comun import es_de_obra_o_arquitectura, fecha_hoy_arg, parsear_fecha_apertura
 from .base import EstructuraCambiada, Fuente, registrar
 
 _log = logging.getLogger(__name__)
@@ -64,6 +64,9 @@ class BaObras(Fuente):
                 continue
 
             organismo = f"GCBA - {unidad}" if unidad else self.nombre
+
+            if not es_de_obra_o_arquitectura(objeto, organismo=organismo):
+                continue
 
             resultados.append(
                 Licitacion(

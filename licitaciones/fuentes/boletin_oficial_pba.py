@@ -304,7 +304,7 @@ class BoletinOficialPba(Fuente):
 
                 # Objeto / Motivo
                 m_obj = re.search(
-                    r"(?:Denominaci[óo]n|Motivo|Objeto|cuyo\s+objeto\s+es\s+la\s+obra\s+denominada|para\s+(?:la\s+)?(?:Ejecuci[óo]n|Contratar\s+la\s+Ejecuci[óo]n|licitar\s+la\s+Obra)|Obra)\s*[:\-]?\s*([^\n]+(?:\n[^\n]+)?)",
+                    r"(?:Denominaci[óo]n|Motivo|Objeto|cuyo\s+objeto\s+es\s+la\s+obra\s+denominada|para\s+(?:la\s+)?(?:Ejecuci[óo]n|Contratar\s+la\s+Ejecuci[óo]n|licitar\s+la\s+Obra)|\bObra\b)\s*[:\-]?\s*([^\n]+(?:\n[^\n]+)?)",
                     cuerpo,
                     re.IGNORECASE,
                 )
@@ -315,7 +315,7 @@ class BoletinOficialPba(Fuente):
                     objeto_limpio = re.sub(r"\s+", " ", " ".join(primeras_lineas[:2])).strip(" |.-")
 
                 # Limpieza de prefijos y colas redundantes en el objeto
-                objeto_limpio = re.sub(r"^(?:de\s+la\s+obra\s*[:\-]?|obra\s*[:\-]?)\s*", "", objeto_limpio, flags=re.IGNORECASE)
+                objeto_limpio = re.sub(r"^(?:de\s+la\s+obra\b|obra\b)\s*[:\-]?\s*", "", objeto_limpio, flags=re.IGNORECASE)
                 objeto_limpio = re.sub(r"[,;]?\s*cuyo\s+presupuesto\s+oficial.*$", "", objeto_limpio, flags=re.IGNORECASE)
                 objeto_limpio = re.sub(r"\s+", " ", objeto_limpio).strip(" |.-")
 

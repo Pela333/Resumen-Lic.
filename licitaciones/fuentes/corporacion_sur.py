@@ -60,7 +60,7 @@ class CorporacionSur(Fuente):
             href = a["href"].strip()
             if not re.search(r"licitaci[óo]n", txt, re.IGNORECASE):
                 continue
-            if not es_de_obra_o_arquitectura(txt):
+            if not es_de_obra_o_arquitectura(txt, organismo=self.nombre):
                 continue
             f_dt = parsear_fecha_apertura(txt)
             if not f_dt or f_dt < hoy:

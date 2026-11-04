@@ -66,7 +66,7 @@ class Aubasa(Fuente):
         for el in elementos:
             if el.name == "table":
                 candidata = self._leer_tabla(el)
-                if es_de_obra_o_arquitectura(candidata.objeto):
+                if es_de_obra_o_arquitectura(candidata.objeto, organismo=self.nombre):
                     actual = candidata
                     resultados.append(actual)
                 else:

@@ -67,6 +67,8 @@ class PuertoLaPlata(Fuente):
                 numero = tds[0]
                 a_tag = tr.find("a", href=True)
                 link = a_tag["href"] if a_tag else self.url
+                if not es_de_obra_o_arquitectura(objeto, organismo=self.nombre):
+                    continue
                 resultados.append(
                     Licitacion(
                         fuente=self.clave,

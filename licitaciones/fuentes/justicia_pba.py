@@ -13,6 +13,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from bs4 import BeautifulSoup
 
+from ..filtro import es_de_obra_o_arquitectura
 from ..modelo import NO_INFORMADO, Licitacion
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -53,7 +54,7 @@ class JusticiaPba(Fuente):
         for a in reg.find_all("a", href=True):
             txt = a.get_text(" ", strip=True)
             href = a["href"]
-            if "licitaci" in txt.lower() or "obra" in txt.lower():
+            if ("licitaci" in txt.lower() or "obra" in txt.lower()) and es_de_obra_o_arquitectura(txt, organismo=self.nombre):
                 m_f = re.search(r"(\d{1,2})/(\d{1,2})/(\d{4})", txt)
                 if m_f:
                     try:

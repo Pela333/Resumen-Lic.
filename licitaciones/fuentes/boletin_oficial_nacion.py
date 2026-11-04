@@ -98,7 +98,8 @@ class BoletinOficialNacion(Fuente):
                 )
                 objeto = re.sub(r"\s+", " ", m_obj.group(1)).strip(" “\"'”").strip() if m_obj else proceso_tit
 
-                if not es_de_obra_o_arquitectura(objeto):
+                organismo_bora = f"BORA - {organismo_tit}"
+                if not es_de_obra_o_arquitectura(objeto, organismo=organismo_bora):
                     continue
 
                 m_ap = re.search(
@@ -120,7 +121,7 @@ class BoletinOficialNacion(Fuente):
                 m_exp = re.search(r"Expediente N°:\s*([A-Z0-9\-#]+)", t_det, re.IGNORECASE)
                 expediente = m_exp.group(1).strip() if m_exp else ""
 
-                m_pres = re.search(r"Presupuesto Oficial[:\s]+(\$[\d.,]+)", t_det, re.IGNORECASE)
+                m_pres = re.search(r"Presupuesto\s*(?:Oficial|Estimado)?[:\s]+(?:[A-Za-z\s]+)?((?:\$|USD)\s*[\d.,]+)", t_det, re.IGNORECASE)
                 presupuesto = m_pres.group(1).strip() if m_pres else NO_INFORMADO
 
                 m_id = re.search(r"/tercera/(\d+)/", href)
@@ -132,7 +133,7 @@ class BoletinOficialNacion(Fuente):
                     Licitacion(
                         fuente=self.clave,
                         id_fuente=id_aviso,
-                        organismo=f"BORA - {organismo_tit}",
+                        organismo=organismo_bora,
                         numero=numero,
                         objeto=objeto,
                         link=link_aviso,

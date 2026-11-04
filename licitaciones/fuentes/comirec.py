@@ -13,6 +13,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from bs4 import BeautifulSoup
 
+from ..filtro import es_de_obra_o_arquitectura
 from ..modelo import NO_INFORMADO, Licitacion
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -81,6 +82,8 @@ class Comirec(Fuente):
                 continue
 
             m_obj = re.search(r"objeto[:\s]+(.*?)(?:Número|\.Número|Tipo|Estado|Comitente|\n\n|$)", bloque, re.IGNORECASE | re.DOTALL)
+            if m_obj and not es_de_obra_o_arquitectura(m_obj.group(1), organismo=self.nombre):
+                continue
             objeto = re.sub(r"\s+", " ", m_obj.group(1)).strip() if m_obj else ""
 
             m_exp = re.search(r"expediente[:\s]+([A-Z0-9\-]+)", bloque, re.IGNORECASE)

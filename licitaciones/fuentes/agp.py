@@ -75,7 +75,7 @@ class Agp(Fuente):
             if f_dt < hoy:
                 continue
 
-            if not es_de_obra_o_arquitectura(obj):
+            if not es_de_obra_o_arquitectura(obj, organismo=self.nombre):
                 continue
 
             # Encontrar primer enlace a pliego o carátula si existe

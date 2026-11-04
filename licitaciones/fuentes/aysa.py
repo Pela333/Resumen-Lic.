@@ -65,7 +65,7 @@ class Aysa(Fuente):
                 continue
 
             objeto = (row.get("Objeto") or "").strip()
-            if not es_de_obra_o_arquitectura(objeto):
+            if not es_de_obra_o_arquitectura(objeto, organismo=self.nombre):
                 continue
 
             lic_id = str(row.get("Id") or "")

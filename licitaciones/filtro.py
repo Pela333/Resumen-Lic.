@@ -29,7 +29,7 @@ import re
 # Vocabulario de obras viales, arquitectura, hidráulica, infraestructura y edificaciones
 PATRON_OBRA = re.compile(
     r"\b("
-    r"obra[s]?(?!\s+(?:social|de\s+t[ií]teres|en\s+(?:el\s+expediente|la\s+solicitud|autos|fojas|el\s+pliego)|agregad[ao]))|"
+    r"obra[s]?(?!\s+(?:social|m[eé]dic[ao]|de\s+t[ií]teres|en\s+(?:el\s+expediente|la\s+solicitud|autos|fojas|el\s+pliego)|agregad[ao]))|"
     r"ley\s*(?:n[°ºo.]*)?\s*(?:13\.?064|6\.?021|130)\b|"
     # Arquitectura / Edificación
     r"construcci[oó]n|construcciones|edificaci[oó]n|edificaciones|arquitectur[a-z]*|"
@@ -137,13 +137,24 @@ def es_de_obra_o_arquitectura(texto: str, organismo: str = "") -> bool:
         return False
     texto_evaluar = f"{organismo} {texto}" if organismo else texto
 
-    # Regla expresa: descartar licitaciones del Ministerio de Salud o centros de salud hospitalarios
-    if organismo and re.search(r"\b(?:ministerio\s+de\s+salud|hospital\b|higa\b|hiea\b|hza\b|hma\b)", organismo, re.IGNORECASE):
+    # Regla expresa: descartar licitaciones del Ministerio de Salud, red hospitalaria y centros de salud
+    if re.search(
+        r"\b(?:ministerio\s+de\s+salud|secretar[ií]a\s+de\s+salud|subsecretar[ií]a\s+de\s+salud|"
+        r"hospital[a-z]*|htal\.?\b|higa\b|hiea\b|hza\b|hma\b|sanatorio[s]?|cl[ií]nica[s]?|"
+        r"cesac\b|caps\b|maternidad(?:es)?|anlis\b|inpb\b|ioma\b|obra\s+m[eé]dico\s+asistencial|"
+        r"centro\s+(?:integral\s+)?(?:municipal\s+)?de\s+salud|salud\s+adolescente|salud\s+mental)\b",
+        texto_evaluar,
+        re.IGNORECASE,
+    ):
         return False
 
     if PATRON_EXCLUSION.search(texto_evaluar):
         return False
-    return bool(PATRON_OBRA.search(texto_evaluar))
+
+    # El objeto contratado debe corresponder a una obra civil, vial, de infraestructura o arquitectura.
+    # Se evalúa sobre el objeto/pliego (no sobre el organismo comitente, para evitar que nombres
+    # de organismos como "Ministerio de Hábitat" o "Instituto Obra Médico Asistencial" califiquen compras de bienes).
+    return bool(PATRON_OBRA.search(texto))
 
 
 def parsear_monto_pesos(texto: str) -> float | None:

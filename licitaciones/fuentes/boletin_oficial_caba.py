@@ -118,8 +118,8 @@ class BoletinOficialCaba(Fuente):
                         ):
                             continue
 
-                        es_obra_explicita = "obra" in tipo_norma.lower()
-                        if not es_obra_explicita and not es_de_obra_o_arquitectura(f"{nombre_norma} {sumario}"):
+                        organismo_bocba = f"BOCBA - {reparticion}"
+                        if not es_de_obra_o_arquitectura(f"{nombre_norma} {sumario}", organismo=organismo_bocba):
                             continue
 
                         vistos.add(id_norma)
@@ -176,7 +176,7 @@ class BoletinOficialCaba(Fuente):
                             Licitacion(
                                 fuente=self.clave,
                                 id_fuente=id_norma,
-                                organismo=f"BOCBA - {reparticion}",
+                                organismo=organismo_bocba,
                                 numero=numero,
                                 objeto=sumario or nombre_norma,
                                 link=url_norma or self.url,

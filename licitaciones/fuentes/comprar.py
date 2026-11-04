@@ -81,8 +81,10 @@ class Comprar(Fuente):
                 if fecha_dt is None or fecha_dt < hoy:
                     continue
 
+                organismo = f"Nación - {unidad}" if unidad else self.nombre
+
                 # En portal generalista nacional, se filtran las licitaciones pertinentes de obra/infraestructura
-                if not es_de_obra_o_arquitectura(objeto):
+                if not es_de_obra_o_arquitectura(objeto, organismo=organismo):
                     continue
 
                 vistos.add(numero)
@@ -94,8 +96,6 @@ class Comprar(Fuente):
                     )
                     if pliego_link:
                         link = pliego_link
-
-                organismo = f"Nación - {unidad}" if unidad else self.nombre
 
                 resultados.append(
                     Licitacion(

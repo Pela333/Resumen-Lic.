@@ -105,7 +105,8 @@ class DgcyePba(Fuente):
 
             partes_obj = [p for p in (caratula, escuela, distrito) if p]
             objeto = " - ".join(partes_obj) if partes_obj else texto_fila[:200]
-            if not caratula and not es_de_obra_o_arquitectura(objeto):
+            organismo_dgcye = f"{self.nombre} ({distrito})" if distrito else self.nombre
+            if not es_de_obra_o_arquitectura(objeto, organismo=organismo_dgcye):
                 continue
 
             numero = procedimiento or expediente or f"DGCYE-{len(resultados) + 1}"
@@ -124,7 +125,7 @@ class DgcyePba(Fuente):
                 Licitacion(
                     fuente=self.clave,
                     id_fuente=id_fuente,
-                    organismo=f"{self.nombre} ({distrito})" if distrito else self.nombre,
+                    organismo=organismo_dgcye,
                     numero=f"{procedimiento} ({expediente})" if (procedimiento and expediente) else numero,
                     objeto=objeto,
                     link=link_doc,

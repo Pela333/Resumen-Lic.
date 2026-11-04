@@ -68,7 +68,7 @@ class CorredoresViales(Fuente):
             tipo_nombre = str(it.get("tipo_nombre") or "Licitación")
             requerimiento = str(it.get("requerimiento") or "").strip()
 
-            if not es_de_obra_o_arquitectura(requerimiento):
+            if not es_de_obra_o_arquitectura(requerimiento, organismo=self.nombre):
                 continue
             link = f"https://corredoresvialessa.com.ar/licitaciones/{lic_id}" if lic_id else self.url
 

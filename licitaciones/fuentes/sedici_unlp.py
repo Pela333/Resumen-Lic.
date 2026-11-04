@@ -18,6 +18,7 @@ from zoneinfo import ZoneInfo
 from bs4 import BeautifulSoup
 
 from ..modelo import NO_INFORMADO, Licitacion
+from ..filtro import es_de_obra_o_arquitectura
 from .aspnet_comun import parsear_fecha_apertura
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -84,6 +85,8 @@ class SediciUnlp(Fuente):
             id_fuente = link.rstrip("/").split("/")[-1]
 
             objeto_completo = f"{objeto} ({direccion})" if direccion else objeto
+            if not es_de_obra_o_arquitectura(objeto_completo, organismo=self.nombre):
+                continue
 
             resultados.append(
                 Licitacion(

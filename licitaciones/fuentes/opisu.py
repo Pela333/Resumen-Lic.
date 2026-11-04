@@ -13,6 +13,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from bs4 import BeautifulSoup
 
+from ..filtro import es_de_obra_o_arquitectura
 from ..modelo import Licitacion
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -91,6 +92,8 @@ class Opisu(Fuente):
                 id_fuente = expediente if expediente else numero
 
                 organismo = f"OPISU ({etiqueta_rubro}) - {municipio}" if municipio else f"OPISU ({etiqueta_rubro})"
+                if not es_de_obra_o_arquitectura(objeto, organismo=organismo):
+                    continue
 
                 resultados.append(
                     Licitacion(

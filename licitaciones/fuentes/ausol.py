@@ -11,6 +11,7 @@ import logging
 import re
 from typing import Any
 
+from ..filtro import es_de_obra_o_arquitectura
 from ..modelo import NO_INFORMADO, Licitacion
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -86,6 +87,8 @@ class Ausol(Fuente):
             if fecha_iso and fecha_iso < hoy:
                 continue
 
+            if not es_de_obra_o_arquitectura(f"{it.get('etiqueta', '')} {it.get('titulo', '')}", organismo=self.nombre):
+                continue
             resultados.append(self._mapear(it))
 
         return resultados

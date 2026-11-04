@@ -89,7 +89,7 @@ class Absa(Fuente):
             descripcion = str(item.get("descripcion") or "").strip()
             texto_completo = f"{titulo} {descripcion}".strip()
 
-            if not es_de_obra_o_arquitectura(texto_completo):
+            if not es_de_obra_o_arquitectura(texto_completo, organismo=self.nombre):
                 continue
 
             id_lic = str(item.get("idlicitacion") or "")

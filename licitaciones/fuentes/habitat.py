@@ -12,6 +12,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from bs4 import BeautifulSoup
 
+from ..filtro import es_de_obra_o_arquitectura
 from ..modelo import NO_INFORMADO, Licitacion
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -107,6 +108,8 @@ class HabitatPba(Fuente):
                 presupuesto = m_pres.group(1).strip() if m_pres else NO_INFORMADO
 
                 id_fuente = expediente if expediente else re.sub(r"[^a-zA-Z0-9]+", "-", href).strip("-")
+                if not es_de_obra_o_arquitectura(objeto, organismo=self.nombre):
+                    continue
 
                 resultados.append(
                     Licitacion(

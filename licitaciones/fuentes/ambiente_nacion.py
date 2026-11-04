@@ -84,7 +84,7 @@ class AmbienteNacion(Fuente):
 
             objeto = re.sub(r"^\d{1,2}\s+de\s+[a-zA-Z]+\s+de\s+\d{4}", "", texto).strip()
 
-            if not es_de_obra_o_arquitectura(objeto):
+            if not es_de_obra_o_arquitectura(objeto, organismo=self.nombre):
                 continue
 
             resultados.append(

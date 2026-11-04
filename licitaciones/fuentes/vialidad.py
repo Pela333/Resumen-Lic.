@@ -13,6 +13,7 @@ import logging
 from datetime import datetime
 from typing import Any
 
+from ..filtro import es_de_obra_o_arquitectura
 from ..modelo import NO_INFORMADO, Licitacion
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -60,6 +61,8 @@ class VialidadPba(Fuente):
             if not es_activa:
                 continue
 
+            if not es_de_obra_o_arquitectura(desc, organismo=self.nombre):
+                continue
             resultados.append(self._mapear_licitacion(d))
 
         return resultados
