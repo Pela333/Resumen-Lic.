@@ -67,18 +67,32 @@ PATRON_OBRA = re.compile(
     re.IGNORECASE,
 )
 
-# Exclusiones específicas (compras de insumos, servicios no constructivos, informática, equipamiento, salud)
+# Exclusiones específicas (compras de insumos, servicios no constructivos, informática, equipamiento médico/suministros)
 PATRON_EXCLUSION = re.compile(
     r"\b("
-    # 0. Salud / Hospitales / Medicina (descartados por directiva comercial)
-    r"ministerio\s+de\s+salud|"
-    r"adquisici[oó]n\s+de\s+medicamentos|medicamentos?\b|farmacia\b|f[aá]rmacos?|"
-    r"insumos?\s+para\s+laboratorio|bacterias?\s+y\s+levaduras|hemograma|determinaciones?\s+de\s+gases|"
-    r"estreptoquinasa|material\s+de\s+esterilizaci[oó]n|residuos\s+patog[eé]nicos|"
+    # 0. Salud: Exclusiones de insumos, medicamentos, aparatología médica y servicios no constructivos
+    # (NOTA: Las obras de arquitectura, remodelación, refacción y puesta en valor en hospitales y centros de salud SÍ son admitidas)
+    r"adquisici[oó]n\s+de\s+(?:medicamentos|f[aá]rmacos|remedios|reactivos|pr[oó]tesis|vacunas|jeringas|descartables|ox[ií]geno|gases\s+medicinales)|"
+    r"compra\s+de\s+(?:medicamentos|f[aá]rmacos|remedios|reactivos|pr[oó]tesis|vacunas|jeringas|descartables|ox[ií]geno|gases\s+medicinales)|"
+    r"medicamentos?\b|farmacia\b|f[aá]rmacos?|material\s+biom[eé]dico|material\s+descartable|material\s+de\s+curaci[oó]n|"
+    r"insumos?\s+(?:para|de)?\s*(?:laboratorio|salud|quir[oó]fano|cirug[ií]a|enfermer[ií]a|farmacia|hemoterapia)|"
+    r"reactivos?\s+(?:de|para)\s+laboratorio|reactivos?\s+de\s+diagn[oó]stico|"
+    r"bacterias?\s+y\s+levaduras|hemograma|determinaciones?\s+de\s+gases|"
+    r"estreptoquinasa|material\s+de\s+esterilizaci[oó]n|servicio\s+de\s+esterilizaci[oó]n|"
+    r"residuos\s+patog[eé]nicos|residuos\s+hospitalarios|"
+    r"pr[oó]tesis|implantes?\s+m[eé]dicos?|marcapasos|v[aá]lvulas?\s+card[ií]acas?|"
+    r"ox[ií]geno\s+medicinal|ox[ií]geno\s+l[ií]quido|gases\s+medicinales|"
+    r"camas?\s+(?:ortop[eé]dicas?|de\s+internaci[oó]n)|sillas?\s+de\s+ruedas|"
+    r"ambulancias?|traslado\s+de\s+pacientes|"
+    r"servicio\s+de\s+contenedores\s+higi[eé]nicos|"
+    r"luminarias?\s+(?:cial[ií]ticas?|scial[ií]ticas?)|l[aá]mparas?\s+(?:cial[ií]ticas?|scial[ií]ticas?)|"
+    r"reparaci[oó]n\s+(?:de\s+)?luminaria\s+(?:cial[ií]tica|scial[ií]tica)|"
+    r"tom[oó]grafo[s]?|resonador(?:es)?|ec[oó]grafo[s]?|mam[oó]grafo[s]?|electrocardi[oó]grafo[s]?|endoscopi[oó]s?|respirador(?:es)?|"
+    r"aparatos?\s+m[eé]dicos?|equipamiento\s+m[eé]dico|instrumental\s+m[eé]dico|instrumental\s+quir[uú]rgico|"
     # 1. Compras / Suministros / Insumos de bienes (corralón, ferretería, librería, limpieza, vehículos, etc.)
-    r"adquisici[oó]n\s+de\s+(?:materiales|insumos|elementos|repuestos|herramientas|ferreter[ií]a|limpieza|librer[ií]a|v[ií]veres|alimentos|frutas|verduras|insecticidas|seguridad|bienes|gases|medicamentos|descartables|trofeos|mobiliario|resmas|papel|camioneta|pick[\s\-]?up|veh[ií]culos)|"
-    r"compra\s+de\s+(?:materiales|insumos|elementos|repuestos|herramientas|ferreter[ií]a|limpieza|librer[ií]a|v[ií]veres|alimentos|frutas|verduras|insecticidas|seguridad|bienes|gases|medicamentos|descartables|trofeos|mobiliario|resmas|papel|camioneta|pick[\s\-]?up|veh[ií]culos)|"
-    r"adquirir\s+(?:materiales|insumos|elementos|repuestos|herramientas|ferreter[ií]a|limpieza|librer[ií]a|v[ií]veres|alimentos|frutas|verduras|insecticidas|seguridad|bienes|gases|medicamentos|descartables|trofeos|mobiliario|resmas|papel|camioneta|pick[\s\-]?up|veh[ií]culos)|"
+    r"adquisici[oó]n\s+de\s+(?:materiales|insumos|elementos|repuestos|herramientas|ferreter[ií]a|limpieza|librer[ií]a|v[ií]veres|alimentos|frutas|verduras|insecticidas|seguridad|bienes|gases|descartables|trofeos|mobiliario|resmas|papel|camioneta|pick[\s\-]?up|veh[ií]culos)|"
+    r"compra\s+de\s+(?:materiales|insumos|elementos|repuestos|herramientas|ferreter[ií]a|limpieza|librer[ií]a|v[ií]veres|alimentos|frutas|verduras|insecticidas|seguridad|bienes|gases|descartables|trofeos|mobiliario|resmas|papel|camioneta|pick[\s\-]?up|veh[ií]culos)|"
+    r"adquirir\s+(?:materiales|insumos|elementos|repuestos|herramientas|ferreter[ií]a|limpieza|librer[ií]a|v[ií]veres|alimentos|frutas|verduras|insecticidas|seguridad|bienes|gases|descartables|trofeos|mobiliario|resmas|papel|camioneta|pick[\s\-]?up|veh[ií]culos)|"
     r"adquisici[oó]n\s+de\s+materiales\s+de\s+construcci[oó]n|compra\s+de\s+materiales\s+de\s+construcci[oó]n|"
     r"provisi[oó]n\s+de\s+veh[ií]culos|adquisici[oó]n\s+de\s+veh[ií]culos|camioneta\b|pick[\s\-]?up|"
     r"trofeos?\b|art[ií]culos?\s+para\s+trofeos|"
@@ -98,14 +112,12 @@ PATRON_EXCLUSION = re.compile(
     r"fotocopiadoras?\b|alquiler\s+de\s+fotocopiadoras|"
     r"servicio\s+de\s+riego|alquiler\s+de\s+servicio\s+de\s+riego|"
     r"concesi[oó]n\s+de\s+uso\s+precario|explotaci[oó]n\s+de\s+la\s+cantina|"
-    r"luminarias?\s+(?:cial[ií]ticas?|scial[ií]ticas?)|l[aá]mparas?\s+(?:cial[ií]ticas?|scial[ií]ticas?)|"
-    r"reparaci[oó]n\s+(?:de\s+)?luminaria\s+(?:cial[ií]tica|scial[ií]tica)|"
     r"servicio\s+(?:anual\s+)?(?:de\s+)?mantenimiento\s+(?:preventivo|correctivo|integral)?\s+(?:y\s+(?:preventivo|correctivo)\s+)?de\s+(?:los\s+)?equipos\s+de\s+aire|"
     r"soluci[oó]n\s+aire\s+acondicionado|mantenimiento\s+de\s+aires?\s+acondicionados?|servicio\s+y\s+mantenimiento\s+de\s+aires?|"
     r"tipo\s+split\s+de\s+\d+|provisi[oó]n\s+y\s+colocaci[oó]n\s+aires?\s+acondicionados?|"
     r"(?:servicio\s+de\s+)?mantenimiento\s+(?:integral|correctivo\s+y\s+preventivo|preventivo\s+y\s+correctivo|preventivo|correctivo)?\s+(?:de\s+)?grupo[s]?\s+electr[oó]geno[s]?|"
     r"recarga\s+de\s+matafuegos|service\s+de\s+ascensores|"
-    r"tom[oó]grafo|resonador|aparatos?\s+m[eé]dicos?|equipamiento\s+de\s+cocina|"
+    r"equipamiento\s+de\s+cocina|"
     # 3. Informática / Nube / Software / Monitoreo
     r"infraestructura\s+(?:en\s+la\s+nube|cloud|tecnol[oó]gica|inform[aá]tica|digital)|"
     r"infraestructura\s+de\s+(?:firewall|redes\s+inform[aá]ticas)|"
@@ -121,7 +133,7 @@ PATRON_EXCLUSION = re.compile(
     r"servicio\s+de\s+limpieza|servicio\s+de\s+seguridad|servicio\s+de\s+vigilancia|"
     r"servicio\s+de\s+difusi[oó]n|transmisiones\s+de\s+automovilismo|"
     r"seguro[s]?\s+contra|responsabilidad\s+civil\s+para\s+directores|p[oó]liza\s+de\s+seguro|"
-    r"servicio\s+de\s+catering|alimentos|medicamentos|pr[oó]tesis|"
+    r"servicio\s+de\s+catering|alimentos|"
     r"recolecci[oó]n\s+de\s+residuos|concesi[oó]n\s+de\s+v[ií]as\s+e\s+inmuebles|"
     r"servicios?\s+de\s+consultor[ií]a\s+de\s+la\s+obra|prefactibilidad\s+t[eé]cnica\s+e\s+ingenier[ií]a\s+conceptual|"
     r"elaboraci[oó]n\s+de\s+un\s+proyecto\s+de\s+instalaci[oó]n|"
@@ -132,28 +144,25 @@ PATRON_EXCLUSION = re.compile(
 
 
 def es_de_obra_o_arquitectura(texto: str, organismo: str = "") -> bool:
-    """Evalúa si el objeto de la licitación corresponde a obras de construcción, arquitectura o vialidad."""
+    """Evalúa si el objeto de la licitación corresponde a obras de construcción, arquitectura o vialidad.
+
+    Criterio de negocio:
+    - Obras de arquitectura y edificación en hospitales, centros de salud, escuelas, edificios públicos
+      (puesta en valor, remodelación, refacción, construcción, ampliación, cubiertas, adecuaciones edilicias)
+      SÍ son de interés de la empresa constructora.
+    - Se descartan de forma estricta las compras de insumos médicos, fármacos, aparatología médica,
+      mantenimiento de equipos no constructivos, suministros de corralón sin colocación y servicios no constructivos.
+    """
     if not texto:
         return False
     texto_evaluar = f"{organismo} {texto}" if organismo else texto
-
-    # Regla expresa: descartar licitaciones del Ministerio de Salud, red hospitalaria y centros de salud
-    if re.search(
-        r"\b(?:ministerio\s+de\s+salud|secretar[ií]a\s+de\s+salud|subsecretar[ií]a\s+de\s+salud|"
-        r"hospital[a-z]*|htal\.?\b|higa\b|hiea\b|hza\b|hma\b|sanatorio[s]?|cl[ií]nica[s]?|"
-        r"cesac\b|caps\b|maternidad(?:es)?|anlis\b|inpb\b|ioma\b|obra\s+m[eé]dico\s+asistencial|"
-        r"centro\s+(?:integral\s+)?(?:municipal\s+)?de\s+salud|salud\s+adolescente|salud\s+mental)\b",
-        texto_evaluar,
-        re.IGNORECASE,
-    ):
-        return False
 
     if PATRON_EXCLUSION.search(texto_evaluar):
         return False
 
     # El objeto contratado debe corresponder a una obra civil, vial, de infraestructura o arquitectura.
-    # Se evalúa sobre el objeto/pliego (no sobre el organismo comitente, para evitar que nombres
-    # de organismos como "Ministerio de Hábitat" o "Instituto Obra Médico Asistencial" califiquen compras de bienes).
+    # Se evalúa sobre el texto del objeto o pliego (para evitar que nombres de organismos califiquen
+    # compras menores de suministros o servicios de oficina).
     return bool(PATRON_OBRA.search(texto))
 
 
