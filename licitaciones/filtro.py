@@ -29,20 +29,23 @@ import re
 # Vocabulario de obras viales, arquitectura, hidráulica, infraestructura y edificaciones
 PATRON_OBRA = re.compile(
     r"\b("
-    r"obra[s]?(?!\s+social|\s+de\s+t[ií]teres)|"
+    r"obra[s]?(?!\s+(?:social|de\s+t[ií]teres|en\s+(?:el\s+expediente|la\s+solicitud|autos|fojas|el\s+pliego)|agregad[ao]))|"
     r"ley\s*(?:n[°ºo.]*)?\s*(?:13\.?064|6\.?021|130)\b|"
     # Arquitectura / Edificación
     r"construcci[oó]n|construcciones|edificaci[oó]n|edificaciones|arquitectur[a-z]*|"
     r"remodelaci[oó]n|remodelaciones|refacci[oó]n|refacciones|readecuaci[oó]n|readecuaciones|"
     r"adecuaci[oó]n|adecuaciones|puesta\s+en\s+valor|restauraci[oó]n|ampliaci[oó]n|ampliaciones|"
     r"alba[nñ]iler[ií]a|mamposter[ií]a|demolici[oó]n|demoliciones|galp[oó]n|galpones|tinglado[s]?|hangar[a-z]*|"
-    r"vivienda[s]?|h[aá]bitat|fachada[s]?|cubierta[s]?|tinglado[s]?|tanque[s]?\s+de\s+agua|"
+    r"vivienda[s]?|h[aá]bitat|fachada[s]?|cubierta[s]?|tinglado[s]?|tanque[s]?\s+de\s+agua|tanques?\s+de\s+reserva|"
     r"cielorraso[s]?|techado|"
+    r"polideportivo[s]?|gimnasio[s]?|centro[s]?\s+deportivo[s]?|"
+    r"montaje\s+de\s+estructura[s]?|montaje\s+estructural|estructura[s]?\s+met[aá]lica[s]?|"
     r"impermeabiliz[a-z]*|filtraci[oó]n|filtraciones|humedad|"
     r"mantenimiento\s+edilicio|reparaci[oó]n\s+edilicia|mantenimiento\s+de\s+edificio[s]?|reparaci[oó]n\s+de\s+edificio[s]?|"
     r"relocalizaci[oó]n\s+de\s+servicios|reforma\s+en\s+internaci[oó]n|"
     # Vialidad / Transporte
     r"vial|viales|paviment[a-z]*|asfalt[a-z]*|hormig[oó]n[a-z]*|bacheo[s]?|calzada[s]?|"
+    r"sellado\s+de\s+juntas|sellado\s+de\s+grietas|"
     r"paso[s]?\s+bajo\s+nivel|paso[s]?\s+a\s+nivel|"
     r"puente[s]?\s+(?:vial|peatonal|vehicular|ferroviario|sobre\s+arroyo|sobre\s+r[ií]o)|"
     r"obras?\s+(?:de\s+)?puentes?|construcci[oó]n\s+(?:de\s+)?puentes?|"
@@ -50,26 +53,35 @@ PATRON_OBRA = re.compile(
     r"se[nñ]alamiento\s+vial|demarcaci[oó]n\s+(?:vial|horizontal|vertical)|guardarrail[a-z]*|"
     r"cord[oó]n\s+cuneta|bicisenda[s]?|ciclov[ií]a[s]?|"
     # Infraestructura hidráulica, sanitaria y redes
-    r"hidr[aá]ulic[a-z]*|desag[uü]e[s]?|pluvial[a-z]*|aliviador[a-z]*|drenaje[s]?|canalizaci[oó]n|cuenca[s]?|"
-    r"acueducto[s]?|gasoducto[s]?|cloac[a-z]*|red\s+cloacal|redes\s+cloacales|colector\s+cloacal|"
+    r"hidr[aá]ulic[a-z]*|desag[uü]e[s]?|sumidero[s]?|pluvial[a-z]*|aliviador[a-z]*|drenaje[s]?|canalizaci[oó]n|cuenca[s]?|"
+    r"acueducto[s]?|gasoducto[s]?|cloac[a-z]*|red\s+cloacal|redes\s+cloacales|colector(?:es)?\b|"
     r"red\s+de\s+agua|provisi[oó]n\s+de\s+agua|agua\s+potable|saneamiento|planta\s+depuradora|"
     r"red\s+el[eé]ctrica|sistema\s+el[eé]ctrico|tendido\s+el[eé]ctrico|subestaci[oó]n\s+transformadora|l[ií]nea\s+de\s+alta\s+tensi[oó]n|electrificaci[oó]n|"
     r"alumbrado\s+p[uú]blico|reconversi[oó]n\s+lum[ií]nica|parque\s+lum[ií]nico|"
     # Instalaciones de obra
     r"instalaci[oó]n\s+(?:el[eé]ctrica|sanitaria|de\s+gas|termomec[aá]nica|contra\s+incendio)|"
+    r"adecuaci[oó]n\s+el[eé]ctrica|"
     # Portuario y aeroportuario
     r"portuari[a-z]*|muelle[s]?|espig[oó]n[a-z]*|dragado[s]?|d[aá]rsena[s]?|pista\s+de\s+aterrizaje|calle\s+de\s+rodaje"
     r")\b",
     re.IGNORECASE,
 )
 
-# Exclusiones específicas (compras de insumos, servicios no constructivos, informática, equipamiento)
+# Exclusiones específicas (compras de insumos, servicios no constructivos, informática, equipamiento, salud)
 PATRON_EXCLUSION = re.compile(
     r"\b("
-    # 1. Compras / Suministros / Insumos de bienes (corralón, ferretería, librería, limpieza, etc.)
-    r"adquisici[oó]n\s+de\s+(?:materiales|insumos|elementos|repuestos|herramientas|ferreter[ií]a|limpieza|librer[ií]a|v[ií]veres|alimentos|frutas|verduras|insecticidas|seguridad|bienes|gases|medicamentos|descartables)|"
-    r"compra\s+de\s+(?:materiales|insumos|elementos|repuestos|herramientas|ferreter[ií]a|limpieza|librer[ií]a|v[ií]veres|alimentos|frutas|verduras|insecticidas|seguridad|bienes|gases|medicamentos|descartables)|"
-    r"adquirir\s+(?:materiales|insumos|elementos|repuestos|herramientas|ferreter[ií]a|limpieza|librer[ií]a|v[ií]veres|alimentos|frutas|verduras|insecticidas|seguridad|bienes|gases|medicamentos|descartables)|"
+    # 0. Salud / Hospitales / Medicina (descartados por directiva comercial)
+    r"ministerio\s+de\s+salud|"
+    r"adquisici[oó]n\s+de\s+medicamentos|medicamentos?\b|farmacia\b|f[aá]rmacos?|"
+    r"insumos?\s+para\s+laboratorio|bacterias?\s+y\s+levaduras|hemograma|determinaciones?\s+de\s+gases|"
+    r"estreptoquinasa|material\s+de\s+esterilizaci[oó]n|residuos\s+patog[eé]nicos|"
+    # 1. Compras / Suministros / Insumos de bienes (corralón, ferretería, librería, limpieza, vehículos, etc.)
+    r"adquisici[oó]n\s+de\s+(?:materiales|insumos|elementos|repuestos|herramientas|ferreter[ií]a|limpieza|librer[ií]a|v[ií]veres|alimentos|frutas|verduras|insecticidas|seguridad|bienes|gases|medicamentos|descartables|trofeos|mobiliario|resmas|papel|camioneta|pick[\s\-]?up|veh[ií]culos)|"
+    r"compra\s+de\s+(?:materiales|insumos|elementos|repuestos|herramientas|ferreter[ií]a|limpieza|librer[ií]a|v[ií]veres|alimentos|frutas|verduras|insecticidas|seguridad|bienes|gases|medicamentos|descartables|trofeos|mobiliario|resmas|papel|camioneta|pick[\s\-]?up|veh[ií]culos)|"
+    r"adquirir\s+(?:materiales|insumos|elementos|repuestos|herramientas|ferreter[ií]a|limpieza|librer[ií]a|v[ií]veres|alimentos|frutas|verduras|insecticidas|seguridad|bienes|gases|medicamentos|descartables|trofeos|mobiliario|resmas|papel|camioneta|pick[\s\-]?up|veh[ií]culos)|"
+    r"adquisici[oó]n\s+de\s+materiales\s+de\s+construcci[oó]n|compra\s+de\s+materiales\s+de\s+construcci[oó]n|"
+    r"provisi[oó]n\s+de\s+veh[ií]culos|adquisici[oó]n\s+de\s+veh[ií]culos|camioneta\b|pick[\s\-]?up|"
+    r"trofeos?\b|art[ií]culos?\s+para\s+trofeos|"
     r"adquisici[oó]n\s+de\s+indumentaria|indumentaria\s+(?:de|para|laboral|del\s+personal)|uniforme[s]?\b|"
     r"adquisici[oó]n\s+(?:de\s+)?luminarias?|luminarias?\s+led|l[aá]mparas?\s+led|tubos?\s+led|"
     r"provisi[oó]n\s+de\s+luminaria|compra\s+de\s+luminaria|"
@@ -82,7 +94,10 @@ PATRON_EXCLUSION = re.compile(
     r"adquisici[oó]n\s+de\s+gases|prueba\s+hidr[aá]ulica\s+(?:con\s+destino|de\s+cilindros|de\s+tubos|de\s+garrafas)|"
     r"adquisici[oó]n\s+elementos\s+de\s+hidr[aá]ulica|gr[uú]as?\s+palfinger|gr[uú]as?|bips\b|"
     r"papel\s+obra\b|"
-    # 2. Servicios menores / mantenimiento de aparatos
+    # 2. Servicios menores / mantenimiento de aparatos / oficinas
+    r"fotocopiadoras?\b|alquiler\s+de\s+fotocopiadoras|"
+    r"servicio\s+de\s+riego|alquiler\s+de\s+servicio\s+de\s+riego|"
+    r"concesi[oó]n\s+de\s+uso\s+precario|explotaci[oó]n\s+de\s+la\s+cantina|"
     r"luminarias?\s+(?:cial[ií]ticas?|scial[ií]ticas?)|l[aá]mparas?\s+(?:cial[ií]ticas?|scial[ií]ticas?)|"
     r"reparaci[oó]n\s+(?:de\s+)?luminaria\s+(?:cial[ií]tica|scial[ií]tica)|"
     r"servicio\s+(?:anual\s+)?(?:de\s+)?mantenimiento\s+(?:preventivo|correctivo|integral)?\s+(?:y\s+(?:preventivo|correctivo)\s+)?de\s+(?:los\s+)?equipos\s+de\s+aire|"
@@ -121,6 +136,10 @@ def es_de_obra_o_arquitectura(texto: str, organismo: str = "") -> bool:
     if not texto:
         return False
     texto_evaluar = f"{organismo} {texto}" if organismo else texto
+
+    # Regla expresa: descartar licitaciones del Ministerio de Salud o centros de salud hospitalarios
+    if organismo and re.search(r"\b(?:ministerio\s+de\s+salud|hospital\b|higa\b|hiea\b|hza\b|hma\b)", organismo, re.IGNORECASE):
+        return False
 
     if PATRON_EXCLUSION.search(texto_evaluar):
         return False
