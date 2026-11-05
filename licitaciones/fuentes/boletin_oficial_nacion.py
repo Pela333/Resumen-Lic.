@@ -17,6 +17,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from ..modelo import NO_INFORMADO, Licitacion
+from ..filtro import extraer_montos_etiquetados
 from .aspnet_comun import es_de_obra_o_arquitectura, parsear_fecha_apertura
 from .base import EstructuraCambiada, Fuente, registrar
 
@@ -121,8 +122,7 @@ class BoletinOficialNacion(Fuente):
                 m_exp = re.search(r"Expediente N°:\s*([A-Z0-9\-#]+)", t_det, re.IGNORECASE)
                 expediente = m_exp.group(1).strip() if m_exp else ""
 
-                m_pres = re.search(r"Presupuesto\s*(?:Oficial|Estimado)?[:\s]+(?:[A-Za-z\s]+)?((?:\$|USD)\s*[\d.,]+)", t_det, re.IGNORECASE)
-                presupuesto = m_pres.group(1).strip() if m_pres else NO_INFORMADO
+                presupuesto = extraer_montos_etiquetados(t_det).get("presupuesto", NO_INFORMADO)
 
                 m_id = re.search(r"/tercera/(\d+)/", href)
                 id_aviso = m_id.group(1) if m_id else href

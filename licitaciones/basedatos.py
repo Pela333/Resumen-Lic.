@@ -65,6 +65,14 @@ class BaseDatos:
         ).fetchall()
         return [Licitacion.desde_dict(json.loads(f[0])) for f in filas]
 
+    def enviadas(self) -> list[Licitacion]:
+        """Licitaciones ya enviadas por mail (sin las descartadas por filtro o duplicado)."""
+        filas = self.con.execute(
+            "SELECT datos FROM licitaciones WHERE enviada_en IS NOT NULL "
+            "AND enviada_en NOT LIKE '%_no_pertinente' AND enviada_en NOT LIKE '%_duplicada'"
+        ).fetchall()
+        return [Licitacion.desde_dict(json.loads(f[0])) for f in filas]
+
     def marcar_enviadas(self, uids: list[str], ahora: str) -> None:
         with self.con:
             self.con.executemany(

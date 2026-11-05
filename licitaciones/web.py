@@ -17,12 +17,14 @@ USER_AGENT = (
 
 
 class ClienteWeb:
-    def __init__(self, timeout: int = 30) -> None:
-        self.timeout = timeout
+    def __init__(self, timeout: int = 30, timeout_conexion: int = 10) -> None:
+        # (conexión, lectura): si el servidor ni siquiera acepta la conexión, se falla rápido.
+        self.timeout = (timeout_conexion, timeout)
         self.sesion = requests.Session()
         self.sesion.headers.update({"User-Agent": USER_AGENT, "Accept-Language": "es-AR,es;q=0.9"})
         reintentos = Retry(
             total=3,
+            connect=1,  # un solo reintento si no se logra conectar (evita esperas largas por bloqueo geográfico)
             backoff_factor=2,  # espera 2, 4, 8 segundos entre intentos
             status_forcelist=(429, 500, 502, 503, 504),
             allowed_methods=("GET",),

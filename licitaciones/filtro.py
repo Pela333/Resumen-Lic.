@@ -166,6 +166,43 @@ def es_de_obra_o_arquitectura(texto: str, organismo: str = "") -> bool:
     return bool(PATRON_OBRA.search(texto))
 
 
+_MONTO = re.compile(r"(?:\$|USD|U\$S)\s*\d[\d.,]*", re.IGNORECASE)
+_ETIQUETAS_MONTO = (
+    ("presupuesto", re.compile(r"presupuesto", re.IGNORECASE)),
+    ("pliego", re.compile(r"(?:valor|costo|precio|arancel)\s+(?:del?\s+)?(?:los?\s+)?(?:pliegos?|legajos?)|pliegos?\b", re.IGNORECASE)),
+    ("garantia", re.compile(r"garant[ií]a", re.IGNORECASE)),
+    ("otro", re.compile(r"sellado|tasa|canon|multa|anticipo", re.IGNORECASE)),
+)
+
+
+def extraer_montos_etiquetados(texto: str, ventana: int = 160) -> dict[str, str]:
+    """Asigna cada monto del texto a la etiqueta que lo precede más de cerca.
+
+    Evita confundir, por ejemplo, el 'Valor del pliego $359.089,78' con el presupuesto oficial:
+    cada importe se atribuye a la última etiqueta (presupuesto / pliego / garantía) que aparece
+    antes de él, sin cruzar el fin de la oración anterior que ya traía otro importe.
+    Devuelve el primer monto encontrado de cada etiqueta, tal cual figura en el texto.
+    """
+    resultado: dict[str, str] = {}
+    for m in _MONTO.finditer(texto):
+        inicio = max(0, m.start() - ventana)
+        contexto = texto[inicio:m.start()]
+        # No cruzar un importe previo: lo que quedó antes pertenece a ese otro importe.
+        previo = list(_MONTO.finditer(contexto))
+        if previo:
+            contexto = contexto[previo[-1].end():]
+        mejor, pos = None, -1
+        for nombre, patron in _ETIQUETAS_MONTO:
+            for hallazgo in patron.finditer(contexto):
+                if hallazgo.start() > pos:
+                    mejor, pos = nombre, hallazgo.start()
+        if mejor and mejor not in resultado:
+            resultado[mejor] = re.sub(r"\s+", "", m.group(0)).rstrip(".,")
+            if m.group(0).upper().startswith("USD"):
+                resultado[mejor] = "USD " + resultado[mejor][3:]
+    return resultado
+
+
 def parsear_monto_pesos(texto: str) -> float | None:
     """Extrae el valor numérico en pesos (ARS) de una cadena de presupuesto o monto.
 

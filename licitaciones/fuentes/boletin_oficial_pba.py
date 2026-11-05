@@ -20,7 +20,7 @@ import urllib3
 from bs4 import BeautifulSoup
 from pypdf import PdfReader
 
-from ..filtro import es_de_obra_o_arquitectura
+from ..filtro import es_de_obra_o_arquitectura, extraer_montos_etiquetados
 from ..modelo import NO_INFORMADO, Licitacion
 from .aspnet_comun import parsear_fecha_apertura
 from .base import EstructuraCambiada, Fuente, registrar
@@ -270,13 +270,19 @@ class BoletinOficialPba(Fuente):
                 if not es_de_obra_o_arquitectura(texto_evaluar, organismo=org):
                     continue
 
-                # Presupuesto oficial
-                m_pres = re.search(
-                    r"Presupuesto\s*(?:oficial|del\s+servicio|estimado)?.*?(?:\$|USD)\s*([\d.,]+)",
-                    cuerpo,
-                    re.IGNORECASE | re.DOTALL,
-                )
-                presupuesto = f"${m_pres.group(1).rstrip('.')}" if m_pres else NO_INFORMADO
+                # Presupuesto oficial: cada importe se asigna a su propia etiqueta
+                # (así no se confunde el 'Valor del pliego' con el presupuesto)
+                montos = extraer_montos_etiquetados(cuerpo)
+                presupuesto = montos.get("presupuesto", NO_INFORMADO)
+                if presupuesto == NO_INFORMADO:
+                    # Algunos avisos informan el presupuesto solo en letras: se muestra tal cual, sin convertir.
+                    m_letras = re.search(
+                        r"Presupuesto\s+oficial\s*:?\s*\(?\s*([A-Za-zÁÉÍÓÚÑáéíóúñ][^.\n]*(?:\n[^.\n]*)?(?:\d+/\d+[^.)]*)?)\)?\s*\.",
+                        cuerpo,
+                        re.IGNORECASE,
+                    )
+                    if m_letras and re.search(r"mil|mill[oó]n|centavos", m_letras.group(1), re.IGNORECASE):
+                        presupuesto = re.sub(r"\s+", " ", m_letras.group(1)).strip(" ()")
 
                 # Apertura
                 m_ap = re.search(
@@ -300,7 +306,7 @@ class BoletinOficialPba(Fuente):
                     cuerpo,
                     re.IGNORECASE,
                 )
-                valor_pliego = m_pliego.group(1).strip(" .") if m_pliego else NO_INFORMADO
+                valor_pliego = montos.get("pliego") or (m_pliego.group(1).strip(" .") if m_pliego else NO_INFORMADO)
 
                 # Objeto / Motivo
                 m_obj = re.search(
@@ -316,6 +322,12 @@ class BoletinOficialPba(Fuente):
 
                 # Limpieza de prefijos y colas redundantes en el objeto
                 objeto_limpio = re.sub(r"^(?:de\s+la\s+obra\b|obra\b)\s*[:\-]?\s*", "", objeto_limpio, flags=re.IGNORECASE)
+                objeto_limpio = re.sub(
+                    r"^(?:para\s+llevar\s+la\s+contrataci[oó]n\s+de\s+una?\s+constructora\s+que\s+realice\s+la\s+obra\s+(?:de\s+)?)",
+                    "",
+                    objeto_limpio,
+                    flags=re.IGNORECASE,
+                )
                 objeto_limpio = re.sub(r"[,;]?\s*cuyo\s+presupuesto\s+oficial.*$", "", objeto_limpio, flags=re.IGNORECASE)
                 objeto_limpio = re.sub(r"\s+", " ", objeto_limpio).strip(" |.-")
 

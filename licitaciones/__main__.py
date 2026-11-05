@@ -20,6 +20,7 @@ from dotenv import load_dotenv
 
 from . import correo, reporte
 from .basedatos import BaseDatos
+from .modelo import deduplicar
 from .filtro import cumple_filtro_monto, es_de_obra_o_arquitectura
 from .fuentes import REGISTRO, EstructuraCambiada
 from .web import ClienteWeb
@@ -99,7 +100,14 @@ def main(argv: list[str] | None = None) -> int:
             estado.estado, estado.mensaje = "error", str(exc)
             log.error("%s: %s", clave, estado.mensaje)
         except Exception as exc:  # caída, timeout, bloqueo, etc.
-            estado.estado, estado.mensaje = "error", f"Servidor no disponible ({type(exc).__name__}: {exc})"
+            if "Timeout" in type(exc).__name__ and "Connect" in type(exc).__name__:
+                estado.mensaje = (
+                    "El portal no aceptó la conexión desde este equipo (posible bloqueo geográfico de "
+                    "servidores en el exterior, como los de GitHub). Funciona al ejecutar desde la PC local."
+                )
+            else:
+                estado.mensaje = f"Servidor no disponible ({type(exc).__name__}: {exc})"
+            estado.estado = "error"
             log.exception("%s: error al recolectar", clave)
         db.registrar_consulta(clave, marca, estado.estado, estado.visibles, estado.nuevas, estado.mensaje)
         estado.racha = db.racha_sin_resultados(clave)
@@ -116,6 +124,11 @@ def main(argv: list[str] | None = None) -> int:
         and cumple_filtro_monto(lic.presupuesto_oficial, presupuesto_minimo, descartar_sin_presupuesto)
     ]
     descartadas = [lic.uid for lic in pendientes_raw if lic not in pendientes]
+    # Una misma licitación puede salir en varias ediciones del boletín o en más de un portal.
+    pendientes, duplicadas = deduplicar(pendientes, db.enviadas())
+    if duplicadas:
+        db.marcar_enviadas([lic.uid for lic in duplicadas], f"{marca}_duplicada")
+        log.info("Descartadas %d licitaciones duplicadas (misma obra en otra edición o portal)", len(duplicadas))
     if descartadas:
         db.marcar_enviadas(descartadas, f"{marca}_no_pertinente")
         log.info("Descartadas %d licitaciones pendientes no pertinentes por filtro temático/monto", len(descartadas))
